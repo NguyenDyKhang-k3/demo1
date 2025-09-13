@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 Trang Web Đặc Biệt Cho Võ Thị Ngọc Muội 💕</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header với tên người yêu -->
+        <header class="header">
+            <div class="hearts-bg">
+                <div class="heart heart-1">💖</div>
+                <div class="heart heart-2">💕</div>
+                <div class="heart heart-3">💗</div>
+                <div class="heart heart-4">💝</div>
+                <div class="heart heart-5">💘</div>
+            </div>
+            <h1 class="main-title">
+                <span class="title-text">💕 Trang Web Đặc Biệt 💕</span>
+                <span class="subtitle">Dành cho Võ Thị Ngọc Muội</span>
+            </h1>
+        </header>
+
+        <!-- Form nhập liệu -->
+        <div class="form-container">
+            <form id="drinkingForm" class="drinking-form">
+                <h2 class="form-title">🍻 Form Đăng Ký Đi Nhậu 🍻</h2>
+                
+                <div class="form-group">
+                    <label for="drinkingWith">Nhậu với ai (điền tất cả những người trong bàn nhậu):</label>
+                    <input type="text" id="drinkingWith" name="drinkingWith" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="guesser">Người đưa đoán đi nhậu:</label>
+                    <input type="text" id="guesser" name="guesser" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="relationship">Quan hệ với người nhậu:</label>
+                    <select id="relationship" name="relationship" required>
+                        <option value="">Chọn quan hệ</option>
+                        <option value="bạn bè">Bạn bè</option>
+                        <option value="đồng nghiệp">Đồng nghiệp</option>
+                        <option value="họ hàng">Họ hàng</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startTime">Giờ đi:</label>
+                        <input type="time" id="startTime" name="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">Giờ về:</label>
+                        <input type="time" id="endTime" name="endTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Lý do nhậu:</label>
+                    <textarea id="reason" name="reason" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="drinkType">Nhậu bia hay rượu:</label>
+                    <select id="drinkType" name="drinkType" required>
+                        <option value="">Chọn loại đồ uống</option>
+                        <option value="bia">🍺 Bia</option>
+                        <option value="rượu">🍷 Rượu</option>
+                        <option value="cả hai">🍺🍷 Cả hai</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Uống khoảng bao nhiêu:</label>
+                    <input type="text" id="amount" name="amount" placeholder="Ví dụ: 3 chai bia, 2 ly rượu..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="commitment">Cam kết:</label>
+                    <textarea id="commitment" name="commitment" rows="2" placeholder="Ví dụ: Sẽ về đúng giờ, không uống quá chén..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Đăng Ký Đi Nhậu
+                    <i class="fas fa-beer"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Danh sách đã lưu -->
+        <div class="list-container">
+            <h2 class="list-title">📋 Danh Sách Đã Đăng Ký</h2>
+            <div id="drinkingList" class="drinking-list">
+                <div class="empty-state">
+                    <i class="fas fa-heart-broken"></i>
+                    <p>Chưa có lịch nhậu nào được đăng ký</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💔 Xác Nhận Đi Nhậu 💔</h3>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn đi nhậu và bỏ người yêu ở nhà chờ đợi không?</p>
+                <div class="warning-text">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Lưu ý: Người yêu có thể sẽ buồn và lo lắng!</span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="stayHomeBtn" class="btn-stay-home">
+                    <i class="fas fa-heart"></i>
+                    Không muốn đi, ở nhà với người yêu
+                </button>
+                <button id="confirmBtn" class="btn-confirm">
+                    <i class="fas fa-beer"></i>
+                    Chắc chắn đi nhậu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chi tiết -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Chi Tiết Lịch Nhậu</h3>
+                <button class="close-btn" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="detailContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hiệu ứng trái tim -->
+    <div id="heartAnimation" class="heart-animation">
+        <div class="growing-heart">💖</div>
+    </div>
+
+    <!-- Thông báo -->
+    <div id="notification" class="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
