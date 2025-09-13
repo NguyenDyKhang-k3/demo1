@@ -85,7 +85,7 @@ function closeConfirmationModal() {
 function handleStayHome() {
     closeConfirmationModal();
     showHeartAnimation();
-    showNotification('💕 Em yêu là số 1! Cảm ơn anh đã chọn ở nhà với em! 💕', 'success');
+    showNotification('💕 Em yêu là số 1! Cảm ơn em đã chọn ở nhà với anh! 💕', 'success');
 }
 
 // Handle confirm button
@@ -116,11 +116,11 @@ function updateButtonStates() {
     modalContent.className = `modal-content attempt-${confirmationAttempts}`;
     
     if (confirmationAttempts === 1) {
-        showNotification('💔 Lần 1: Anh thật sự muốn đi nhậu à? 💔', 'warning');
+        showNotification('💔 Lần 1: Em thật sự muốn đi nhậu à? 💔', 'warning');
     } else if (confirmationAttempts === 2) {
-        showNotification('💔 Lần 2: Em sẽ rất buồn nếu anh đi... 💔', 'warning');
+        showNotification('💔 Lần 2: Em sẽ rất buồn nếu em đi... 💔', 'warning');
     } else if (confirmationAttempts === 3) {
-        showNotification('💔 Lần 3: Anh thật tàn ác! 💔', 'error');
+        showNotification('💔 Lần 3: Em thật tàn ác! 💔', 'error');
     }
 }
 
