@@ -1,6 +1,12 @@
 // Global variables
-let drinkingRecords = JSON.parse(localStorage.getItem('drinkingRecords')) || [];
+let drinkingRecords = [];
 let confirmationAttempts = 0;
+
+// JSONBin configuration
+const JSONBIN_API_KEY = 'YOUR_API_KEY_HERE'; // Thay thế bằng API key của bạn
+const JSONBIN_BIN_ID = 'YOUR_BIN_ID_HERE'; // Thay thế bằng Bin ID của bạn
+const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
+const JSONBIN_UPDATE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
 // DOM elements
 const form = document.getElementById('drinkingForm');
@@ -14,7 +20,7 @@ const notification = document.getElementById('notification');
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
-    renderDrinkingList();
+    loadDrinkingRecords();
     addEventListeners();
     showWelcomeAnimation();
 });
@@ -150,10 +156,54 @@ function showHeartAnimation() {
     }, 3000);
 }
 
-// Save drinking record
-function saveDrinkingRecord(data) {
+// Load drinking records from JSONBin
+async function loadDrinkingRecords() {
+    try {
+        const response = await fetch(JSONBIN_URL, {
+            headers: {
+                'X-Master-Key': JSONBIN_API_KEY
+            }
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            drinkingRecords = result.record || [];
+        } else {
+            // Fallback to localStorage if JSONBin fails
+            drinkingRecords = JSON.parse(localStorage.getItem('drinkingRecords')) || [];
+        }
+    } catch (error) {
+        console.log('Sử dụng dữ liệu từ localStorage');
+        drinkingRecords = JSON.parse(localStorage.getItem('drinkingRecords')) || [];
+    }
+    
+    renderDrinkingList();
+}
+
+// Save drinking record to JSONBin
+async function saveDrinkingRecord(data) {
     drinkingRecords.push(data);
-    localStorage.setItem('drinkingRecords', JSON.stringify(drinkingRecords));
+    
+    try {
+        const response = await fetch(JSONBIN_UPDATE_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify(drinkingRecords)
+        });
+        
+        if (response.ok) {
+            console.log('Dữ liệu đã được lưu vào JSONBin');
+        } else {
+            throw new Error('Lỗi khi lưu vào JSONBin');
+        }
+    } catch (error) {
+        console.log('Lưu vào localStorage làm backup');
+        localStorage.setItem('drinkingRecords', JSON.stringify(drinkingRecords));
+    }
+    
     renderDrinkingList();
     form.reset();
 }
@@ -384,6 +434,30 @@ floatUpStyle.textContent = `
     }
 `;
 document.head.appendChild(floatUpStyle);
+
+// Refresh data function
+async function refreshData() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    const icon = refreshBtn.querySelector('i');
+    
+    // Show loading animation
+    icon.style.animation = 'spin 1s linear infinite';
+    refreshBtn.disabled = true;
+    
+    try {
+        await loadDrinkingRecords();
+        showNotification('🔄 Dữ liệu đã được cập nhật!', 'success');
+    } catch (error) {
+        showNotification('❌ Lỗi khi tải dữ liệu', 'error');
+    } finally {
+        // Reset button
+        icon.style.animation = '';
+        refreshBtn.disabled = false;
+    }
+}
+
+// Auto refresh every 30 seconds
+setInterval(refreshData, 30000);
 
 // Start romantic effects
 createRomanticEffects();

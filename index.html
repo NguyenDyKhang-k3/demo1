@@ -97,7 +97,13 @@
 
         <!-- Danh sách đã lưu -->
         <div class="list-container">
-            <h2 class="list-title">📋 Danh Sách Đã Đăng Ký</h2>
+            <div class="list-header">
+                <h2 class="list-title">📋 Danh Sách Đã Đăng Ký</h2>
+                <button id="refreshBtn" class="refresh-btn" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i>
+                    Làm mới
+                </button>
+            </div>
             <div id="drinkingList" class="drinking-list">
                 <div class="empty-state">
                     <i class="fas fa-heart-broken"></i>
