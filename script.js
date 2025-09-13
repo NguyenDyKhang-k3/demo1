@@ -19,8 +19,9 @@ const heartAnimation = document.getElementById('heartAnimation');
 const notification = document.getElementById('notification');
 
 // Initialize the app
-document.addEventListener('DOMContentLoaded', function() {
-    loadDrinkingRecords();
+document.addEventListener('DOMContentLoaded', async function() {
+    await initializeJSONBin();
+    await loadDrinkingRecords();
     addEventListeners();
     showWelcomeAnimation();
 });
@@ -167,17 +168,53 @@ async function loadDrinkingRecords() {
         
         if (response.ok) {
             const result = await response.json();
-            drinkingRecords = result.record || [];
+            // Ensure drinkingRecords is always an array
+            drinkingRecords = Array.isArray(result.record) ? result.record : [];
+            console.log('Loaded from JSONBin:', drinkingRecords);
         } else {
             // Fallback to localStorage if JSONBin fails
-            drinkingRecords = JSON.parse(localStorage.getItem('drinkingRecords')) || [];
+            const localData = localStorage.getItem('drinkingRecords');
+            drinkingRecords = localData ? JSON.parse(localData) : [];
+            console.log('Loaded from localStorage:', drinkingRecords);
         }
     } catch (error) {
-        console.log('Sử dụng dữ liệu từ localStorage');
-        drinkingRecords = JSON.parse(localStorage.getItem('drinkingRecords')) || [];
+        console.log('Error loading data, using localStorage:', error);
+        const localData = localStorage.getItem('drinkingRecords');
+        drinkingRecords = localData ? JSON.parse(localData) : [];
+    }
+    
+    // Ensure drinkingRecords is always an array before rendering
+    if (!Array.isArray(drinkingRecords)) {
+        drinkingRecords = [];
     }
     
     renderDrinkingList();
+}
+
+// Initialize JSONBin with empty array if needed
+async function initializeJSONBin() {
+    try {
+        const response = await fetch(JSONBIN_URL, {
+            headers: {
+                'X-Master-Key': JSONBIN_API_KEY
+            }
+        });
+        
+        if (!response.ok && response.status === 404) {
+            // Bin doesn't exist, create it with empty array
+            await fetch(JSONBIN_UPDATE_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify([])
+            });
+            console.log('Created new JSONBin with empty array');
+        }
+    } catch (error) {
+        console.log('Error initializing JSONBin:', error);
+    }
 }
 
 // Save drinking record to JSONBin
@@ -210,6 +247,12 @@ async function saveDrinkingRecord(data) {
 
 // Render drinking list
 function renderDrinkingList() {
+    // Ensure drinkingRecords is an array
+    if (!Array.isArray(drinkingRecords)) {
+        console.error('drinkingRecords is not an array:', drinkingRecords);
+        drinkingRecords = [];
+    }
+    
     if (drinkingRecords.length === 0) {
         drinkingList.innerHTML = `
             <div class="empty-state">
