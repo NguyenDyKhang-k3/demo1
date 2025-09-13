@@ -3,8 +3,8 @@ let drinkingRecords = [];
 let confirmationAttempts = 0;
 
 // JSONBin configuration
-const JSONBIN_API_KEY = 'YOUR_API_KEY_HERE'; // Thay thế bằng API key của bạn
-const JSONBIN_BIN_ID = 'YOUR_BIN_ID_HERE'; // Thay thế bằng Bin ID của bạn
+const JSONBIN_API_KEY = '$2a$10$Ctif05.NZ8KUOWPehcgSQuBr96xl1TFjwuPsWRVpOdrxPTP6aCM7C'; // Thay thế bằng API key của bạn
+const JSONBIN_BIN_ID = '68c54d47d0ea881f407c8378'; // Thay thế bằng Bin ID của bạn
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
 const JSONBIN_UPDATE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
@@ -124,7 +124,7 @@ function updateButtonStates() {
     if (confirmationAttempts === 1) {
         showNotification('💔 Lần 1: Em thật sự muốn đi nhậu à? 💔', 'warning');
     } else if (confirmationAttempts === 2) {
-        showNotification('💔 Lần 2: Em sẽ rất buồn nếu em đi... 💔', 'warning');
+        showNotification('💔 Lần 2: Anh sẽ rất buồn nếu em đi... 💔', 'warning');
     } else if (confirmationAttempts === 3) {
         showNotification('💔 Lần 3: Em thật tàn ác! 💔', 'error');
     }
