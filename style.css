@@ -519,13 +519,29 @@ body {
 }
 
 .admin-record-actions button {
-    background: #f44336;
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 15px;
     cursor: pointer;
     font-size: 0.8rem;
+    margin-left: 5px;
+}
+
+.admin-record-actions .view-btn {
+    background: #3742fa;
+}
+
+.admin-record-actions .view-btn:hover {
+    background: #2f3542;
+}
+
+.admin-record-actions .delete-btn {
+    background: #f44336;
+}
+
+.admin-record-actions .delete-btn:hover {
+    background: #d32f2f;
 }
 
 .settings-grid {

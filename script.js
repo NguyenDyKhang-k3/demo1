@@ -587,6 +587,54 @@ function showDetail(id) {
             <p><strong>Giờ kết thúc:</strong> ${record.workEndTime}</p>
             <p><strong>Cam kết:</strong> ${record.workCommitment}</p>
         `;
+    } else if (record.type === 'study') {
+        detailHTML += `
+            <p><strong>Loại học tập:</strong> ${record.studyType}</p>
+            <p><strong>Môn học:</strong> ${record.studySubject}</p>
+            <p><strong>Địa điểm:</strong> ${record.studyLocation}</p>
+            <p><strong>Học với ai:</strong> ${record.studyWith}</p>
+            <p><strong>Giờ bắt đầu:</strong> ${record.studyStartTime}</p>
+            <p><strong>Giờ kết thúc:</strong> ${record.studyEndTime}</p>
+            <p><strong>Lý do:</strong> ${record.studyReason}</p>
+        `;
+    } else if (record.type === 'sports') {
+        detailHTML += `
+            <p><strong>Loại thể thao:</strong> ${record.sportType}</p>
+            <p><strong>Địa điểm:</strong> ${record.sportLocation}</p>
+            <p><strong>Chơi với ai:</strong> ${record.sportWith}</p>
+            <p><strong>Giờ bắt đầu:</strong> ${record.sportStartTime}</p>
+            <p><strong>Giờ kết thúc:</strong> ${record.sportEndTime}</p>
+            <p><strong>Cường độ:</strong> ${record.sportIntensity}</p>
+            <p><strong>Cam kết:</strong> ${record.sportCommitment}</p>
+        `;
+    } else if (record.type === 'health') {
+        detailHTML += `
+            <p><strong>Loại sức khỏe:</strong> ${record.healthType}</p>
+            <p><strong>Địa điểm:</strong> ${record.healthLocation}</p>
+            <p><strong>Bác sĩ:</strong> ${record.healthDoctor}</p>
+            <p><strong>Triệu chứng:</strong> ${record.healthSymptoms}</p>
+            <p><strong>Giờ bắt đầu:</strong> ${record.healthStartTime}</p>
+            <p><strong>Giờ kết thúc:</strong> ${record.healthEndTime}</p>
+            <p><strong>Mức độ khẩn cấp:</strong> ${record.healthUrgency}</p>
+        `;
+    } else if (record.type === 'family') {
+        detailHTML += `
+            <p><strong>Loại hoạt động gia đình:</strong> ${record.familyType}</p>
+            <p><strong>Với ai:</strong> ${record.familyWith}</p>
+            <p><strong>Địa điểm:</strong> ${record.familyLocation}</p>
+            <p><strong>Giờ bắt đầu:</strong> ${record.familyStartTime}</p>
+            <p><strong>Giờ kết thúc:</strong> ${record.familyEndTime}</p>
+            <p><strong>Lý do:</strong> ${record.familyReason}</p>
+        `;
+    } else if (record.type === 'other') {
+        detailHTML += `
+            <p><strong>Loại hoạt động:</strong> ${record.otherType}</p>
+            <p><strong>Với ai:</strong> ${record.otherWith}</p>
+            <p><strong>Địa điểm:</strong> ${record.otherLocation}</p>
+            <p><strong>Giờ bắt đầu:</strong> ${record.otherStartTime}</p>
+            <p><strong>Giờ kết thúc:</strong> ${record.otherEndTime}</p>
+            <p><strong>Mô tả:</strong> ${record.otherDescription}</p>
+        `;
     } else if (record.type === 'confirmation_attempt') {
         detailHTML += `
             <p><strong>Lần xác nhận:</strong> ${record.attempt}</p>
@@ -601,7 +649,7 @@ function showDetail(id) {
     }
     
     detailHTML += `
-            <p><strong>Ngày tạo:</strong> ${record.createdAt}</p>
+            <p><strong>Ngày tạo:</strong> ${record.createdAt || record.timestamp}</p>
         </div>
     `;
     
@@ -1147,17 +1195,65 @@ function loadAdminRecords() {
         return;
     }
     
-    adminRecordList.innerHTML = allRecords.map(record => `
-        <div class="admin-record-item">
-            <div class="admin-record-info">
-                <h6>${getTypeDisplayName(record.type)} - ${new Date(record.createdAt).toLocaleDateString()}</h6>
-                <p>ID: ${record.id} | ${record.type}</p>
+    adminRecordList.innerHTML = allRecords.map(record => {
+        // Get display title based on record type
+        let title = 'Hoạt động';
+        if (record.type === 'confirmation_attempt') {
+            title = `Lần xác nhận thứ ${record.attempt}`;
+        } else if (record.type === 'stay_home_decision') {
+            title = 'Quyết định ở nhà';
+        } else {
+            title = record.type === 'drinking' ? record.drinkingWith : 
+                   record.type === 'eating' ? record.eatingWith :
+                   record.type === 'shopping' ? record.shoppingWith :
+                   record.type === 'travel' ? record.travelDestination :
+                   record.type === 'hanging' ? record.hangingWith :
+                   record.type === 'work' ? record.workType :
+                   record.type === 'study' ? record.studySubject :
+                   record.type === 'sports' ? record.sportType :
+                   record.type === 'health' ? record.healthType :
+                   record.type === 'family' ? record.familyType :
+                   record.type === 'other' ? record.otherType : 'Hoạt động';
+        }
+        
+        const icons = {
+            drinking: '🍻',
+            eating: '🍽️',
+            shopping: '🛍️',
+            travel: '✈️',
+            hanging: '🎮',
+            work: '💼',
+            study: '🎓',
+            sports: '🏃‍♂️',
+            health: '🏥',
+            family: '👨‍👩‍👧‍👦',
+            other: '📝',
+            confirmation_attempt: '💔',
+            stay_home_decision: '💕'
+        };
+        
+        const icon = icons[record.type] || '📋';
+        
+        return `
+            <div class="admin-record-item">
+                <div class="admin-record-info">
+                    <h6>${icon} ${title}</h6>
+                    <p><strong>Loại:</strong> ${getTypeDisplayName(record.type)}</p>
+                    <p><strong>ID:</strong> ${record.id}</p>
+                    <p><strong>Thời gian:</strong> ${record.startTime || record.travelStartDate || record.studyStartTime || record.sportStartTime || record.healthStartTime || record.familyStartTime || record.otherStartTime || 'N/A'} - ${record.endTime || record.travelEndDate || record.studyEndTime || record.sportEndTime || record.healthEndTime || record.familyEndTime || record.otherEndTime || 'N/A'}</p>
+                    <p><strong>Ngày tạo:</strong> ${record.createdAt || record.timestamp}</p>
+                    ${record.type === 'confirmation_attempt' || record.type === 'stay_home_decision' ? 
+                        `<p><strong>Hành động:</strong> ${record.action === 'confirm' ? 'Xác nhận' : 'Ở nhà'}</p>` : 
+                        ''
+                    }
+                </div>
+                <div class="admin-record-actions">
+                    <button onclick="showDetail(${record.id})" class="view-btn">Xem chi tiết</button>
+                    <button onclick="deleteRecord(${record.id})" class="delete-btn">Xóa</button>
+                </div>
             </div>
-            <div class="admin-record-actions">
-                <button onclick="deleteRecord(${record.id})">Xóa</button>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function deleteRecord(id) {
