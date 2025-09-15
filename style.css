@@ -1124,6 +1124,76 @@ body {
     }
 }
 
+/* Breaking Heart Animation */
+.breaking-heart-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000;
+    pointer-events: none;
+    display: none;
+}
+
+.heart-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.heart-beating {
+    font-size: 6rem;
+    text-align: center;
+    animation: heartBeat 3s ease-in-out;
+}
+
+@keyframes heartBeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    75% {
+        transform: scale(1.1);
+    }
+}
+
+.heart-pieces {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.heart-piece {
+    position: absolute;
+    font-size: 2rem;
+    animation: heartBreak 2s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes heartBreak {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    10% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) rotate(var(--rotation)) scale(0.3);
+    }
+}
+
 /* Notification */
 .notification {
     position: fixed;

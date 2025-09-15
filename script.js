@@ -313,9 +313,11 @@ function showCruelMessage() {
     `;
     modalBody.appendChild(cruelDiv);
     
-    // Remove the cruel message after 3 seconds
+    // Remove the cruel message after 3 seconds and show breaking heart
     setTimeout(() => {
         cruelDiv.remove();
+        // Show breaking heart animation
+        createBreakingHeartAnimation();
     }, 3000);
 }
 
@@ -876,6 +878,8 @@ function rejectApology() {
         
         closeApologyModal();
         showNotification('💔 Anh hiểu em vẫn còn giận... Anh sẽ cố gắng hơn nữa để em tha thứ cho anh! 💔', 'warning');
+        // Show breaking heart animation
+        createBreakingHeartAnimation();
     }
 }
 
@@ -912,6 +916,59 @@ function createFloatingHearts() {
             }, 3000);
         }, i * 200);
     }
+}
+
+// Create breaking heart animation
+function createBreakingHeartAnimation() {
+    const breakingHeartAnimation = document.getElementById('breakingHeartAnimation');
+    const heartPieces = document.querySelector('.heart-pieces');
+    
+    // Show the animation
+    breakingHeartAnimation.style.display = 'block';
+    
+    // After 3 seconds, start the breaking animation
+    setTimeout(() => {
+        // Hide the beating heart
+        document.querySelector('.heart-beating').style.display = 'none';
+        
+        // Create heart pieces
+        const heartEmojis = ['💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔'];
+        
+        heartEmojis.forEach((emoji, index) => {
+            const piece = document.createElement('div');
+            piece.className = 'heart-piece';
+            piece.innerHTML = emoji;
+            
+            // Random position around center
+            const angle = (index / heartEmojis.length) * 2 * Math.PI;
+            const distance = 200 + Math.random() * 300;
+            const dx = Math.cos(angle) * distance;
+            const dy = Math.sin(angle) * distance;
+            const rotation = Math.random() * 360;
+            
+            // Set CSS custom properties for animation
+            piece.style.setProperty('--dx', dx + 'px');
+            piece.style.setProperty('--dy', dy + 'px');
+            piece.style.setProperty('--rotation', rotation + 'deg');
+            
+            // Position at center initially
+            piece.style.left = '50%';
+            piece.style.top = '50%';
+            piece.style.transform = 'translate(-50%, -50%)';
+            
+            heartPieces.appendChild(piece);
+        });
+        
+        // Hide the animation after 5 seconds
+        setTimeout(() => {
+            breakingHeartAnimation.style.display = 'none';
+            // Clear pieces
+            heartPieces.innerHTML = '';
+            // Show beating heart again for next use
+            document.querySelector('.heart-beating').style.display = 'block';
+        }, 5000);
+        
+    }, 3000);
 }
 
 // Show welcome animation

@@ -63,6 +63,9 @@
             <button class="nav-tab" onclick="switchTab('apology')">
                 <i class="fas fa-heart-broken"></i> Xin Lỗi
             </button>
+            <button class="nav-tab" onclick="createBreakingHeartAnimation()" style="background: linear-gradient(45deg, #ff4757, #ff3742); color: white;">
+                <i class="fas fa-heart-broken"></i> Test Trái Tim Tan Vỡ
+            </button>
         </div>
 
         <!-- Form nhập liệu -->
@@ -871,6 +874,14 @@
     <!-- Hiệu ứng trái tim -->
     <div id="heartAnimation" class="heart-animation">
         <div class="growing-heart">💖</div>
+    </div>
+    
+    <!-- Breaking Heart Animation -->
+    <div id="breakingHeartAnimation" class="breaking-heart-animation">
+        <div class="heart-container">
+            <div class="heart-beating">💖</div>
+            <div class="heart-pieces"></div>
+        </div>
     </div>
 
     <!-- Game Modal -->
