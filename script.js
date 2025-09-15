@@ -926,25 +926,34 @@ function createBreakingHeartAnimation() {
     // Show the animation
     breakingHeartAnimation.style.display = 'block';
     
+    // Add vibration effect if supported
+    if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 400]);
+    }
+    
     // After 3 seconds, start the breaking animation
     setTimeout(() => {
-        // Hide the beating heart
-        document.querySelector('.heart-beating').style.display = 'none';
+        // Hide the beating heart with fade effect
+        const beatingHeart = document.querySelector('.heart-beating');
+        beatingHeart.style.animation = 'none';
+        beatingHeart.style.opacity = '0';
+        beatingHeart.style.transform = 'scale(0)';
+        beatingHeart.style.transition = 'all 0.5s ease-in-out';
         
-        // Create heart pieces
-        const heartEmojis = ['💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔'];
+        // Create heart pieces with more variety
+        const heartEmojis = ['💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔', '💔'];
         
         heartEmojis.forEach((emoji, index) => {
             const piece = document.createElement('div');
             piece.className = 'heart-piece';
             piece.innerHTML = emoji;
             
-            // Random position around center
-            const angle = (index / heartEmojis.length) * 2 * Math.PI;
-            const distance = 200 + Math.random() * 300;
+            // Random position around center with more variation
+            const angle = (index / heartEmojis.length) * 2 * Math.PI + (Math.random() - 0.5) * 0.5;
+            const distance = 300 + Math.random() * 500;
             const dx = Math.cos(angle) * distance;
             const dy = Math.sin(angle) * distance;
-            const rotation = Math.random() * 360;
+            const rotation = Math.random() * 720; // More rotation
             
             // Set CSS custom properties for animation
             piece.style.setProperty('--dx', dx + 'px');
@@ -956,17 +965,25 @@ function createBreakingHeartAnimation() {
             piece.style.top = '50%';
             piece.style.transform = 'translate(-50%, -50%)';
             
+            // Add random delay for staggered animation
+            piece.style.animationDelay = (Math.random() * 0.5) + 's';
+            
             heartPieces.appendChild(piece);
         });
         
-        // Hide the animation after 5 seconds
+        // Hide the animation after 6 seconds
         setTimeout(() => {
             breakingHeartAnimation.style.display = 'none';
             // Clear pieces
             heartPieces.innerHTML = '';
-            // Show beating heart again for next use
-            document.querySelector('.heart-beating').style.display = 'block';
-        }, 5000);
+            // Reset beating heart for next use
+            const beatingHeart = document.querySelector('.heart-beating');
+            beatingHeart.style.display = 'block';
+            beatingHeart.style.opacity = '1';
+            beatingHeart.style.transform = 'scale(1)';
+            beatingHeart.style.animation = 'heartBeat 3s ease-in-out';
+            beatingHeart.style.transition = 'none';
+        }, 6000);
         
     }, 3000);
 }
