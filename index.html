@@ -690,7 +690,8 @@
 
             <!-- Apology Form -->
             <form id="apologyForm" class="permission-form" data-type="apology">
-                <h2 class="form-title">💔 Xin Lỗi & Dỗ Dành 💔</h2>
+                <h2 class="form-title">💔 Gửi Lời Xin Lỗi Cho Người Yêu 💔</h2>
+                <p class="form-description">Anh hãy điền thông tin để gửi lời xin lỗi chân thành đến người yêu</p>
                 
                 <div class="form-group">
                     <label for="apologyReason">Lý do xin lỗi:</label>
@@ -736,7 +737,7 @@
 
                 <button type="submit" class="submit-btn apology-btn">
                     <i class="fas fa-heart-broken"></i>
-                    Gửi Lời Xin Lỗi
+                    Gửi Lời Xin Lỗi Đến Người Yêu
                     <i class="fas fa-heart"></i>
                 </button>
             </form>
@@ -889,22 +890,27 @@
     <div id="apologyModal" class="modal">
         <div class="modal-content apology-modal">
             <div class="modal-header">
-                <h2>💔 Xin Lỗi Chân Thành 💔</h2>
+                <h2>💕 Lời Xin Lỗi Từ Người Yêu 💕</h2>
                 <span class="close" onclick="closeApologyModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <div id="apologyContent"></div>
-                <div id="forgivenessConditions" style="display: none;">
-                    <h3>🕊️ Điều Kiện Để Hết Giận 🕊️</h3>
+                <div id="romanticMessage" class="romantic-message">
+                    <p>💖 Anh yêu em rất nhiều và anh thực sự hối hận về những gì đã làm... 💖</p>
+                    <p>🌟 Em có thể tha thứ cho anh không? Anh sẽ làm bất cứ điều gì để em hết giận! 🌟</p>
+                </div>
+                <div id="forgivenessConditions">
+                    <h3>🕊️ Em Muốn Anh Làm Gì Để Hết Giận? 🕊️</h3>
+                    <p class="condition-instruction">Em hãy chọn hoặc thêm điều kiện mà em muốn anh thực hiện:</p>
                     <div id="conditionsList"></div>
                     <div class="condition-input">
-                        <label>Thêm điều kiện khác:</label>
-                        <textarea id="customCondition" placeholder="Nhập điều kiện của em..." rows="2"></textarea>
-                        <button onclick="addCustomCondition()">Thêm</button>
+                        <label>Em muốn anh làm gì khác:</label>
+                        <textarea id="customCondition" placeholder="Ví dụ: Mua em một món quà đặc biệt, đưa em đi chơi..." rows="2"></textarea>
+                        <button onclick="addCustomCondition()">Thêm Điều Kiện</button>
                     </div>
                     <div class="apology-actions">
-                        <button onclick="acceptApology()" class="forgive-btn">💕 Chấp Nhận Xin Lỗi 💕</button>
-                        <button onclick="rejectApology()" class="reject-btn">💔 Chưa Hết Giận 💔</button>
+                        <button onclick="acceptApology()" class="forgive-btn">💕 Em Tha Thứ Cho Anh 💕</button>
+                        <button onclick="rejectApology()" class="reject-btn">💔 Em Vẫn Chưa Hết Giận 💔</button>
                     </div>
                 </div>
             </div>

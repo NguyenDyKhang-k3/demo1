@@ -718,12 +718,21 @@ function showApologyModal(apologyData) {
     // Display apology content
     apologyContent.innerHTML = `
         <div class="apology-display">
-            <h3>💔 Lời Xin Lỗi 💔</h3>
-            <p><strong>Lý do:</strong> ${apologyData.apologyReason}</p>
-            <p><strong>Mức độ:</strong> ${apologyData.apologySeverity}</p>
-            <p><strong>Lời xin lỗi:</strong> ${apologyData.apologyMessage}</p>
-            <p><strong>Lời hứa:</strong> ${apologyData.apologyPromise}</p>
-            <p><strong>Bù đắp:</strong> ${apologyData.apologyCompensation}</p>
+            <h3>💔 Lời Xin Lỗi Từ Anh 💔</h3>
+            <p><strong>Lý do anh xin lỗi:</strong> ${apologyData.apologyReason}</p>
+            <p><strong>Anh biết em cảm thấy:</strong> ${apologyData.apologySeverity}</p>
+            <div class="apology-message-box">
+                <h4>💌 Lời xin lỗi chân thành:</h4>
+                <p class="apology-text">"${apologyData.apologyMessage}"</p>
+            </div>
+            <div class="promise-box">
+                <h4>🤝 Lời hứa của anh:</h4>
+                <p class="promise-text">"${apologyData.apologyPromise}"</p>
+            </div>
+            <div class="compensation-box">
+                <h4>💝 Anh sẽ bù đắp bằng cách:</h4>
+                <p class="compensation-text">"${apologyData.apologyCompensation}"</p>
+            </div>
         </div>
     `;
     
@@ -763,9 +772,11 @@ function updateConditionsList() {
         switch (currentApologyData.apologySeverity) {
             case 'Nhẹ - Em chỉ hơi buồn':
                 defaultConditions = [
-                    'Mua em một ly trà sữa',
-                    'Ôm em 5 phút',
-                    'Nói "Anh yêu em" 10 lần'
+                    'Mua em một ly trà sữa ngon',
+                    'Ôm em thật chặt 5 phút',
+                    'Nói "Anh yêu em" 10 lần mỗi ngày',
+                    'Massage vai cho em',
+                    'Khen em xinh đẹp'
                 ];
                 break;
             case 'Trung bình - Em khá tức giận':
@@ -773,7 +784,9 @@ function updateConditionsList() {
                     'Mua em một món đồ em thích',
                     'Massage chân cho em 15 phút',
                     'Làm việc nhà cả tuần',
-                    'Hứa không tái phạm trong 1 tháng'
+                    'Hứa không tái phạm trong 1 tháng',
+                    'Đưa em đi ăn món em thích',
+                    'Viết thư tình cho em'
                 ];
                 break;
             case 'Nặng - Em rất tức giận':
@@ -782,7 +795,9 @@ function updateConditionsList() {
                     'Nấu ăn cho em cả tuần',
                     'Làm tất cả việc nhà trong 2 tuần',
                     'Không được đi nhậu trong 1 tháng',
-                    'Viết thư tình 1000 từ'
+                    'Viết thư tình 1000 từ',
+                    'Đưa em đi spa',
+                    'Hát tình ca cho em nghe'
                 ];
                 break;
             case 'Rất nặng - Em muốn chia tay':
@@ -792,7 +807,9 @@ function updateConditionsList() {
                     'Không được đi nhậu trong 3 tháng',
                     'Viết nhật ký tình yêu mỗi ngày',
                     'Đưa em đi du lịch',
-                    'Hứa sẽ thay đổi hoàn toàn'
+                    'Hứa sẽ thay đổi hoàn toàn',
+                    'Tổ chức buổi hẹn hò đặc biệt',
+                    'Làm video tình yêu cho em'
                 ];
                 break;
         }
@@ -835,7 +852,7 @@ function acceptApology() {
         saveAllRecords();
         
         closeApologyModal();
-        showNotification('💕 Cảm ơn em đã tha thứ cho anh! Anh sẽ cố gắng làm tốt hơn! 💕', 'success');
+        showNotification('💕 Cảm ơn em đã tha thứ cho anh! Anh yêu em rất nhiều và sẽ cố gắng làm tốt hơn! 💕', 'success');
         createFloatingHearts();
     }
 }
@@ -858,7 +875,7 @@ function rejectApology() {
         saveAllRecords();
         
         closeApologyModal();
-        showNotification('💔 Anh sẽ cố gắng hơn nữa để em tha thứ... 💔', 'warning');
+        showNotification('💔 Anh hiểu em vẫn còn giận... Anh sẽ cố gắng hơn nữa để em tha thứ cho anh! 💔', 'warning');
     }
 }
 
