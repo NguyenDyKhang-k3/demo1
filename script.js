@@ -3,6 +3,8 @@ let allRecords = [];
 let confirmationAttempts = 0;
 let currentTab = 'drinking';
 let currentAdminTab = 'stats';
+let currentApologyData = null;
+let customConditions = [];
 
 // JSONBin configuration
 const JSONBIN_API_KEY = '$2a$10$Ctif05.NZ8KUOWPehcgSQuBr96xl1TFjwuPsWRVpOdrxPTP6aCM7C'; // Thay thế bằng API key của bạn
@@ -16,6 +18,7 @@ const confirmationModal = document.getElementById('confirmationModal');
 const detailModal = document.getElementById('detailModal');
 const gameModal = document.getElementById('gameModal');
 const adminModal = document.getElementById('adminModal');
+const apologyModal = document.getElementById('apologyModal');
 const stayHomeBtn = document.getElementById('stayHomeBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 const heartAnimation = document.getElementById('heartAnimation');
@@ -178,17 +181,30 @@ function handleFormSubmit(e) {
             familyEndTime: formData.get('familyEndTime'),
             familyReason: formData.get('familyReason')
         };
-    } else if (formType === 'other') {
-        recordData = {
-            ...recordData,
-            otherType: formData.get('otherType'),
-            otherWith: formData.get('otherWith'),
-            otherLocation: formData.get('otherLocation'),
-            otherStartTime: formData.get('otherStartTime'),
-            otherEndTime: formData.get('otherEndTime'),
-            otherDescription: formData.get('otherDescription')
-        };
-    }
+        } else if (formType === 'other') {
+            recordData = {
+                ...recordData,
+                otherType: formData.get('otherType'),
+                otherWith: formData.get('otherWith'),
+                otherLocation: formData.get('otherLocation'),
+                otherStartTime: formData.get('otherStartTime'),
+                otherEndTime: formData.get('otherEndTime'),
+                otherDescription: formData.get('otherDescription')
+            };
+        } else if (formType === 'apology') {
+            recordData = {
+                ...recordData,
+                apologyReason: formData.get('apologyReason'),
+                apologySeverity: formData.get('apologySeverity'),
+                apologyMessage: formData.get('apologyMessage'),
+                apologyPromise: formData.get('apologyPromise'),
+                apologyCompensation: formData.get('apologyCompensation')
+            };
+            
+            // Show apology modal instead of saving directly
+            showApologyModal(recordData);
+            return; // Don't save yet, wait for response
+        }
     
     // Show confirmation modal
     showConfirmationModal(recordData);
@@ -442,7 +458,9 @@ function renderDrinkingList() {
             family: '👨‍👩‍👧‍👦',
             other: '📝',
             confirmation_attempt: '💔',
-            stay_home_decision: '💕'
+            stay_home_decision: '💕',
+            apology_accepted: '💕',
+            apology_rejected: '💔'
         };
         
         const icon = icons[record.type] || '📋';
@@ -452,6 +470,10 @@ function renderDrinkingList() {
             title = `Lần xác nhận thứ ${record.attempt}`;
         } else if (record.type === 'stay_home_decision') {
             title = 'Quyết định ở nhà';
+        } else if (record.type === 'apology_accepted') {
+            title = `Xin lỗi: ${record.apologyReason}`;
+        } else if (record.type === 'apology_rejected') {
+            title = `Xin lỗi: ${record.apologyReason}`;
         } else {
             title = record.type === 'drinking' ? record.drinkingWith : 
                    record.type === 'eating' ? record.eatingWith :
@@ -467,7 +489,7 @@ function renderDrinkingList() {
         }
         
         return `
-            <div class="drinking-item" onclick="showDetail(${record.id})">
+        <div class="drinking-item" onclick="showDetail(${record.id})">
                 <h3>${icon} ${title}</h3>
                 <p><strong>Loại:</strong> ${getTypeDisplayName(record.type)}</p>
                 ${record.type === 'confirmation_attempt' || record.type === 'stay_home_decision' ? 
@@ -475,7 +497,7 @@ function renderDrinkingList() {
                     `<p><strong>Thời gian:</strong> ${record.startTime || record.travelStartDate || record.studyStartTime || record.sportStartTime || record.healthStartTime || record.familyStartTime || record.otherStartTime} - ${record.endTime || record.travelEndDate || record.studyEndTime || record.sportEndTime || record.healthEndTime || record.familyEndTime || record.otherEndTime}</p>`
                 }
                 <p><strong>Ngày tạo:</strong> ${record.createdAt || record.timestamp}</p>
-            </div>
+        </div>
         `;
     }).join('');
 }
@@ -495,7 +517,9 @@ function getTypeDisplayName(type) {
         family: 'Gia đình',
         other: 'Khác',
         confirmation_attempt: 'Lần xác nhận',
-        stay_home_decision: 'Quyết định ở nhà'
+        stay_home_decision: 'Quyết định ở nhà',
+        apology_accepted: 'Xin lỗi (đã tha thứ)',
+        apology_rejected: 'Xin lỗi (chưa tha thứ)'
     };
     return names[type] || type;
 }
@@ -646,6 +670,26 @@ function showDetail(id) {
             <p><strong>Hành động:</strong> Quyết định ở nhà</p>
             <p><strong>Dữ liệu gốc:</strong> ${record.originalData ? JSON.stringify(record.originalData, null, 2) : 'Không có'}</p>
         `;
+    } else if (record.type === 'apology_accepted') {
+        detailHTML += `
+            <p><strong>Lý do xin lỗi:</strong> ${record.apologyReason}</p>
+            <p><strong>Mức độ:</strong> ${record.apologySeverity}</p>
+            <p><strong>Lời xin lỗi:</strong> ${record.apologyMessage}</p>
+            <p><strong>Lời hứa:</strong> ${record.apologyPromise}</p>
+            <p><strong>Bù đắp:</strong> ${record.apologyCompensation}</p>
+            <p><strong>Trạng thái:</strong> Đã được tha thứ 💕</p>
+            <p><strong>Điều kiện:</strong> ${record.conditions ? record.conditions.join(', ') : 'Không có'}</p>
+        `;
+    } else if (record.type === 'apology_rejected') {
+        detailHTML += `
+            <p><strong>Lý do xin lỗi:</strong> ${record.apologyReason}</p>
+            <p><strong>Mức độ:</strong> ${record.apologySeverity}</p>
+            <p><strong>Lời xin lỗi:</strong> ${record.apologyMessage}</p>
+            <p><strong>Lời hứa:</strong> ${record.apologyPromise}</p>
+            <p><strong>Bù đắp:</strong> ${record.apologyCompensation}</p>
+            <p><strong>Trạng thái:</strong> Chưa được tha thứ 💔</p>
+            <p><strong>Điều kiện:</strong> ${record.conditions ? record.conditions.join(', ') : 'Không có'}</p>
+        `;
     }
     
     detailHTML += `
@@ -661,6 +705,161 @@ function showDetail(id) {
 // Close detail modal
 function closeDetailModal() {
     detailModal.style.display = 'none';
+}
+
+// Show apology modal
+function showApologyModal(apologyData) {
+    currentApologyData = apologyData;
+    customConditions = [];
+    
+    const apologyContent = document.getElementById('apologyContent');
+    const forgivenessConditions = document.getElementById('forgivenessConditions');
+    
+    // Display apology content
+    apologyContent.innerHTML = `
+        <div class="apology-display">
+            <h3>💔 Lời Xin Lỗi 💔</h3>
+            <p><strong>Lý do:</strong> ${apologyData.apologyReason}</p>
+            <p><strong>Mức độ:</strong> ${apologyData.apologySeverity}</p>
+            <p><strong>Lời xin lỗi:</strong> ${apologyData.apologyMessage}</p>
+            <p><strong>Lời hứa:</strong> ${apologyData.apologyPromise}</p>
+            <p><strong>Bù đắp:</strong> ${apologyData.apologyCompensation}</p>
+        </div>
+    `;
+    
+    // Show conditions section
+    forgivenessConditions.style.display = 'block';
+    updateConditionsList();
+    
+    apologyModal.style.display = 'block';
+}
+
+// Close apology modal
+function closeApologyModal() {
+    apologyModal.style.display = 'none';
+    currentApologyData = null;
+    customConditions = [];
+}
+
+// Add custom condition
+function addCustomCondition() {
+    const customConditionInput = document.getElementById('customCondition');
+    const condition = customConditionInput.value.trim();
+    
+    if (condition) {
+        customConditions.push(condition);
+        customConditionInput.value = '';
+        updateConditionsList();
+    }
+}
+
+// Update conditions list
+function updateConditionsList() {
+    const conditionsList = document.getElementById('conditionsList');
+    
+    // Default conditions based on severity
+    let defaultConditions = [];
+    if (currentApologyData) {
+        switch (currentApologyData.apologySeverity) {
+            case 'Nhẹ - Em chỉ hơi buồn':
+                defaultConditions = [
+                    'Mua em một ly trà sữa',
+                    'Ôm em 5 phút',
+                    'Nói "Anh yêu em" 10 lần'
+                ];
+                break;
+            case 'Trung bình - Em khá tức giận':
+                defaultConditions = [
+                    'Mua em một món đồ em thích',
+                    'Massage chân cho em 15 phút',
+                    'Làm việc nhà cả tuần',
+                    'Hứa không tái phạm trong 1 tháng'
+                ];
+                break;
+            case 'Nặng - Em rất tức giận':
+                defaultConditions = [
+                    'Mua em một món quà đắt tiền',
+                    'Nấu ăn cho em cả tuần',
+                    'Làm tất cả việc nhà trong 2 tuần',
+                    'Không được đi nhậu trong 1 tháng',
+                    'Viết thư tình 1000 từ'
+                ];
+                break;
+            case 'Rất nặng - Em muốn chia tay':
+                defaultConditions = [
+                    'Mua em một món quà rất đắt tiền',
+                    'Nấu ăn và dọn dẹp nhà cả tháng',
+                    'Không được đi nhậu trong 3 tháng',
+                    'Viết nhật ký tình yêu mỗi ngày',
+                    'Đưa em đi du lịch',
+                    'Hứa sẽ thay đổi hoàn toàn'
+                ];
+                break;
+        }
+    }
+    
+    const allConditions = [...defaultConditions, ...customConditions];
+    
+    conditionsList.innerHTML = allConditions.map((condition, index) => `
+        <div class="condition-item">
+            ${condition}
+            ${index >= defaultConditions.length ? 
+                `<button class="remove-condition" onclick="removeCondition(${index - defaultConditions.length})">X</button>` : 
+                ''
+            }
+        </div>
+    `).join('');
+}
+
+// Remove custom condition
+function removeCondition(index) {
+    customConditions.splice(index, 1);
+    updateConditionsList();
+}
+
+// Accept apology
+function acceptApology() {
+    if (currentApologyData) {
+        const apologyRecord = {
+            ...currentApologyData,
+            id: Date.now(),
+            type: 'apology_accepted',
+            status: 'accepted',
+            conditions: [...document.querySelectorAll('.condition-item')].map(item => 
+                item.textContent.replace('X', '').trim()
+            ),
+            timestamp: new Date().toLocaleString('vi-VN')
+        };
+        
+        allRecords.push(apologyRecord);
+        saveAllRecords();
+        
+        closeApologyModal();
+        showNotification('💕 Cảm ơn em đã tha thứ cho anh! Anh sẽ cố gắng làm tốt hơn! 💕', 'success');
+        createFloatingHearts();
+    }
+}
+
+// Reject apology
+function rejectApology() {
+    if (currentApologyData) {
+        const apologyRecord = {
+            ...currentApologyData,
+            id: Date.now(),
+            type: 'apology_rejected',
+            status: 'rejected',
+            conditions: [...document.querySelectorAll('.condition-item')].map(item => 
+                item.textContent.replace('X', '').trim()
+            ),
+            timestamp: new Date().toLocaleString('vi-VN')
+        };
+        
+        allRecords.push(apologyRecord);
+        saveAllRecords();
+        
+        closeApologyModal();
+        showNotification('💔 Anh sẽ cố gắng hơn nữa để em tha thứ... 💔', 'warning');
+    }
 }
 
 // Show notification
@@ -1164,7 +1363,9 @@ function updateAdminStats() {
         family: allRecords.filter(r => r.type === 'family').length,
         other: allRecords.filter(r => r.type === 'other').length,
         confirmations: allRecords.filter(r => r.type === 'confirmation_attempt').length,
-        stayHome: allRecords.filter(r => r.type === 'stay_home_decision').length
+        stayHome: allRecords.filter(r => r.type === 'stay_home_decision').length,
+        apologiesAccepted: allRecords.filter(r => r.type === 'apology_accepted').length,
+        apologiesRejected: allRecords.filter(r => r.type === 'apology_rejected').length
     };
     
     document.getElementById('totalRequests').textContent = stats.total;
@@ -1185,6 +1386,12 @@ function updateAdminStats() {
     if (document.getElementById('stayHomeCount')) {
         document.getElementById('stayHomeCount').textContent = stats.stayHome;
     }
+    if (document.getElementById('apologiesAcceptedCount')) {
+        document.getElementById('apologiesAcceptedCount').textContent = stats.apologiesAccepted;
+    }
+    if (document.getElementById('apologiesRejectedCount')) {
+        document.getElementById('apologiesRejectedCount').textContent = stats.apologiesRejected;
+    }
 }
 
 function loadAdminRecords() {
@@ -1202,6 +1409,10 @@ function loadAdminRecords() {
             title = `Lần xác nhận thứ ${record.attempt}`;
         } else if (record.type === 'stay_home_decision') {
             title = 'Quyết định ở nhà';
+        } else if (record.type === 'apology_accepted') {
+            title = `Xin lỗi: ${record.apologyReason}`;
+        } else if (record.type === 'apology_rejected') {
+            title = `Xin lỗi: ${record.apologyReason}`;
         } else {
             title = record.type === 'drinking' ? record.drinkingWith : 
                    record.type === 'eating' ? record.eatingWith :
@@ -1229,7 +1440,9 @@ function loadAdminRecords() {
             family: '👨‍👩‍👧‍👦',
             other: '📝',
             confirmation_attempt: '💔',
-            stay_home_decision: '💕'
+            stay_home_decision: '💕',
+            apology_accepted: '💕',
+            apology_rejected: '💔'
         };
         
         const icon = icons[record.type] || '📋';

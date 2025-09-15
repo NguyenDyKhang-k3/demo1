@@ -60,6 +60,9 @@
             <button class="nav-tab" onclick="switchTab('other')">
                 <i class="fas fa-ellipsis-h"></i> Khác
             </button>
+            <button class="nav-tab" onclick="switchTab('apology')">
+                <i class="fas fa-heart-broken"></i> Xin Lỗi
+            </button>
         </div>
 
         <!-- Form nhập liệu -->
@@ -684,6 +687,59 @@
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
             </form>
+
+            <!-- Apology Form -->
+            <form id="apologyForm" class="permission-form" data-type="apology">
+                <h2 class="form-title">💔 Xin Lỗi & Dỗ Dành 💔</h2>
+                
+                <div class="form-group">
+                    <label for="apologyReason">Lý do xin lỗi:</label>
+                    <select id="apologyReason" name="apologyReason" required>
+                        <option value="">Chọn lý do xin lỗi</option>
+                        <option value="Đi nhậu mà không báo">Đi nhậu mà không báo</option>
+                        <option value="Về muộn không xin phép">Về muộn không xin phép</option>
+                        <option value="Quên hẹn hò">Quên hẹn hò</option>
+                        <option value="Nói lời làm tổn thương">Nói lời làm tổn thương</option>
+                        <option value="Không quan tâm đủ">Không quan tâm đủ</option>
+                        <option value="Làm việc quá nhiều">Làm việc quá nhiều</option>
+                        <option value="Không nghe lời">Không nghe lời</option>
+                        <option value="Lãng phí thời gian">Lãng phí thời gian</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="apologySeverity">Mức độ nghiêm trọng:</label>
+                    <select id="apologySeverity" name="apologySeverity" required>
+                        <option value="">Chọn mức độ</option>
+                        <option value="Nhẹ - Em chỉ hơi buồn">Nhẹ - Em chỉ hơi buồn</option>
+                        <option value="Trung bình - Em khá tức giận">Trung bình - Em khá tức giận</option>
+                        <option value="Nặng - Em rất tức giận">Nặng - Em rất tức giận</option>
+                        <option value="Rất nặng - Em muốn chia tay">Rất nặng - Em muốn chia tay</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="apologyMessage">Lời xin lỗi chân thành:</label>
+                    <textarea id="apologyMessage" name="apologyMessage" rows="4" placeholder="Viết lời xin lỗi chân thành..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="apologyPromise">Lời hứa:</label>
+                    <textarea id="apologyPromise" name="apologyPromise" rows="3" placeholder="Anh hứa sẽ..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="apologyCompensation">Đề xuất bù đắp:</label>
+                    <textarea id="apologyCompensation" name="apologyCompensation" rows="3" placeholder="Anh sẽ bù đắp bằng cách..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn apology-btn">
+                    <i class="fas fa-heart-broken"></i>
+                    Gửi Lời Xin Lỗi
+                    <i class="fas fa-heart"></i>
+                </button>
+            </form>
         </div>
 
         <!-- Mini Games Section -->
@@ -829,6 +885,32 @@
         </div>
     </div>
 
+    <!-- Apology Modal -->
+    <div id="apologyModal" class="modal">
+        <div class="modal-content apology-modal">
+            <div class="modal-header">
+                <h2>💔 Xin Lỗi Chân Thành 💔</h2>
+                <span class="close" onclick="closeApologyModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="apologyContent"></div>
+                <div id="forgivenessConditions" style="display: none;">
+                    <h3>🕊️ Điều Kiện Để Hết Giận 🕊️</h3>
+                    <div id="conditionsList"></div>
+                    <div class="condition-input">
+                        <label>Thêm điều kiện khác:</label>
+                        <textarea id="customCondition" placeholder="Nhập điều kiện của em..." rows="2"></textarea>
+                        <button onclick="addCustomCondition()">Thêm</button>
+                    </div>
+                    <div class="apology-actions">
+                        <button onclick="acceptApology()" class="forgive-btn">💕 Chấp Nhận Xin Lỗi 💕</button>
+                        <button onclick="rejectApology()" class="reject-btn">💔 Chưa Hết Giận 💔</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Modal -->
     <div id="adminModal" class="modal">
         <div class="modal-content admin-modal">
@@ -902,6 +984,20 @@
                                 <div class="stat-info">
                                     <h5>Ở nhà</h5>
                                     <span id="stayHomeCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💕</div>
+                                <div class="stat-info">
+                                    <h5>Xin lỗi (đã tha)</h5>
+                                    <span id="apologiesAcceptedCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💔</div>
+                                <div class="stat-info">
+                                    <h5>Xin lỗi (chưa tha)</h5>
+                                    <span id="apologiesRejectedCount">0</span>
                                 </div>
                             </div>
                         </div>

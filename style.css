@@ -382,6 +382,136 @@ body {
     transform: translateY(0);
 }
 
+/* Apology Modal Styles */
+.apology-modal {
+    max-width: 600px;
+    background: linear-gradient(135deg, #ff6b9d, #c44569);
+    color: white;
+}
+
+.apology-modal .modal-header h2 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.apology-btn {
+    background: linear-gradient(45deg, #ff6b9d, #c44569) !important;
+    border: 2px solid #fff !important;
+    color: white !important;
+}
+
+.apology-btn:hover {
+    background: linear-gradient(45deg, #e91e63, #ad1457) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+}
+
+.condition-input {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.condition-input label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.condition-input textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.condition-input button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.condition-input button:hover {
+    background: #45a049;
+}
+
+.apology-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.forgive-btn {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.forgive-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.reject-btn {
+    background: linear-gradient(45deg, #f44336, #d32f2f);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reject-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+}
+
+#conditionsList {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.condition-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border-left: 4px solid #4CAF50;
+}
+
+.condition-item .remove-condition {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    float: right;
+    font-size: 0.8rem;
+}
+
+.condition-item .remove-condition:hover {
+    background: #d32f2f;
+}
+
 /* Admin Modal Styles */
 .admin-modal {
     max-width: 800px;
