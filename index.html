@@ -25,10 +25,33 @@
             </h1>
         </header>
 
+        <!-- Navigation tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('drinking')">
+                <i class="fas fa-beer"></i> Đi Nhậu
+            </button>
+            <button class="nav-tab" onclick="switchTab('eating')">
+                <i class="fas fa-utensils"></i> Đi Ăn
+            </button>
+            <button class="nav-tab" onclick="switchTab('shopping')">
+                <i class="fas fa-shopping-bag"></i> Mua Sắm
+            </button>
+            <button class="nav-tab" onclick="switchTab('travel')">
+                <i class="fas fa-plane"></i> Du Lịch
+            </button>
+            <button class="nav-tab" onclick="switchTab('hanging')">
+                <i class="fas fa-gamepad"></i> Đi Chơi
+            </button>
+            <button class="nav-tab" onclick="switchTab('work')">
+                <i class="fas fa-briefcase"></i> Công Việc
+            </button>
+        </div>
+
         <!-- Form nhập liệu -->
         <div class="form-container">
-            <form id="drinkingForm" class="drinking-form">
-                <h2 class="form-title">🍻 Form Đăng Ký Đi Nhậu 🍻</h2>
+            <!-- Drinking Form -->
+            <form id="drinkingForm" class="permission-form active" data-type="drinking">
+                <h2 class="form-title">🍻 Form Xin Phép Đi Nhậu 🍻</h2>
                 
                 <div class="form-group">
                     <label for="drinkingWith">Nhậu với ai (điền tất cả những người trong bàn nhậu):</label>
@@ -89,20 +112,278 @@
 
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-heart"></i>
-                    Đăng Ký Đi Nhậu
+                    Xin Phép Đi Nhậu
                     <i class="fas fa-beer"></i>
                 </button>
             </form>
+
+            <!-- Eating Form -->
+            <form id="eatingForm" class="permission-form" data-type="eating">
+                <h2 class="form-title">🍽️ Form Xin Phép Đi Ăn 🍽️</h2>
+                
+                <div class="form-group">
+                    <label for="eatingWith">Ăn với ai:</label>
+                    <input type="text" id="eatingWith" name="eatingWith" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eatingPlace">Địa điểm ăn:</label>
+                    <input type="text" id="eatingPlace" name="eatingPlace" placeholder="Tên nhà hàng/quán ăn" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eatingReason">Lý do đi ăn:</label>
+                    <textarea id="eatingReason" name="eatingReason" rows="3" placeholder="Ví dụ: Sinh nhật bạn, họp mặt đồng nghiệp..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eatingStartTime">Giờ đi:</label>
+                        <input type="time" id="eatingStartTime" name="eatingStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eatingEndTime">Giờ về:</label>
+                        <input type="time" id="eatingEndTime" name="eatingEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="eatingCommitment">Cam kết:</label>
+                    <textarea id="eatingCommitment" name="eatingCommitment" rows="2" placeholder="Ví dụ: Sẽ về đúng giờ, chụp ảnh gửi em..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Đi Ăn
+                    <i class="fas fa-utensils"></i>
+                </button>
+            </form>
+
+            <!-- Shopping Form -->
+            <form id="shoppingForm" class="permission-form" data-type="shopping">
+                <h2 class="form-title">🛍️ Form Xin Phép Đi Mua Sắm 🛍️</h2>
+                
+                <div class="form-group">
+                    <label for="shoppingWith">Mua sắm với ai:</label>
+                    <input type="text" id="shoppingWith" name="shoppingWith" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shoppingPlace">Địa điểm mua sắm:</label>
+                    <input type="text" id="shoppingPlace" name="shoppingPlace" placeholder="Tên trung tâm thương mại" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shoppingItems">Mục đích mua sắm:</label>
+                    <textarea id="shoppingItems" name="shoppingItems" rows="3" placeholder="Ví dụ: Mua quần áo, đồ dùng cá nhân, quà cho em..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="shoppingBudget">Ngân sách dự kiến:</label>
+                    <input type="number" id="shoppingBudget" name="shoppingBudget" placeholder="Ví dụ: 500000" min="0">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="shoppingStartTime">Giờ đi:</label>
+                        <input type="time" id="shoppingStartTime" name="shoppingStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shoppingEndTime">Giờ về:</label>
+                        <input type="time" id="shoppingEndTime" name="shoppingEndTime" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Đi Mua Sắm
+                    <i class="fas fa-shopping-bag"></i>
+                </button>
+            </form>
+
+            <!-- Travel Form -->
+            <form id="travelForm" class="permission-form" data-type="travel">
+                <h2 class="form-title">✈️ Form Xin Phép Đi Du Lịch ✈️</h2>
+                
+                <div class="form-group">
+                    <label for="travelDestination">Địa điểm du lịch:</label>
+                    <input type="text" id="travelDestination" name="travelDestination" placeholder="Ví dụ: Đà Nẵng, Nha Trang..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="travelWith">Đi với ai:</label>
+                    <input type="text" id="travelWith" name="travelWith" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="travelStartDate">Ngày đi:</label>
+                        <input type="date" id="travelStartDate" name="travelStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="travelEndDate">Ngày về:</label>
+                        <input type="date" id="travelEndDate" name="travelEndDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="travelReason">Lý do đi du lịch:</label>
+                    <textarea id="travelReason" name="travelReason" rows="3" placeholder="Ví dụ: Nghỉ lễ, team building..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="travelAccommodation">Nơi ở:</label>
+                    <input type="text" id="travelAccommodation" name="travelAccommodation" placeholder="Tên khách sạn/resort">
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Đi Du Lịch
+                    <i class="fas fa-plane"></i>
+                </button>
+            </form>
+
+            <!-- Hanging Out Form -->
+            <form id="hangingForm" class="permission-form" data-type="hanging">
+                <h2 class="form-title">🎮 Form Xin Phép Đi Chơi 🎮</h2>
+                
+                <div class="form-group">
+                    <label for="hangingWith">Chơi với ai:</label>
+                    <input type="text" id="hangingWith" name="hangingWith" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="hangingActivity">Hoạt động:</label>
+                    <select id="hangingActivity" name="hangingActivity" required>
+                        <option value="">Chọn hoạt động</option>
+                        <option value="game">Chơi game</option>
+                        <option value="movie">Xem phim</option>
+                        <option value="karaoke">Karaoke</option>
+                        <option value="coffee">Uống cà phê</option>
+                        <option value="sports">Chơi thể thao</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="hangingPlace">Địa điểm:</label>
+                    <input type="text" id="hangingPlace" name="hangingPlace" placeholder="Tên quán game, rạp chiếu phim..." required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hangingStartTime">Giờ đi:</label>
+                        <input type="time" id="hangingStartTime" name="hangingStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hangingEndTime">Giờ về:</label>
+                        <input type="time" id="hangingEndTime" name="hangingEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hangingCommitment">Cam kết:</label>
+                    <textarea id="hangingCommitment" name="hangingCommitment" rows="2" placeholder="Ví dụ: Sẽ về đúng giờ, không chơi quá khuya..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Đi Chơi
+                    <i class="fas fa-gamepad"></i>
+                </button>
+            </form>
+
+            <!-- Work Form -->
+            <form id="workForm" class="permission-form" data-type="work">
+                <h2 class="form-title">💼 Form Xin Phép Công Việc 💼</h2>
+                
+                <div class="form-group">
+                    <label for="workType">Loại công việc:</label>
+                    <select id="workType" name="workType" required>
+                        <option value="">Chọn loại công việc</option>
+                        <option value="overtime">Làm thêm giờ</option>
+                        <option value="meeting">Họp</option>
+                        <option value="business_trip">Công tác</option>
+                        <option value="training">Đào tạo</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="workLocation">Địa điểm làm việc:</label>
+                    <input type="text" id="workLocation" name="workLocation" placeholder="Văn phòng, địa điểm khác..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="workReason">Lý do:</label>
+                    <textarea id="workReason" name="workReason" rows="3" placeholder="Mô tả chi tiết công việc..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="workStartTime">Giờ bắt đầu:</label>
+                        <input type="time" id="workStartTime" name="workStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="workEndTime">Giờ kết thúc:</label>
+                        <input type="time" id="workEndTime" name="workEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="workCommitment">Cam kết:</label>
+                    <textarea id="workCommitment" name="workCommitment" rows="2" placeholder="Ví dụ: Sẽ hoàn thành công việc đúng hạn..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Công Việc
+                    <i class="fas fa-briefcase"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Mini Games Section -->
+        <div class="games-container">
+            <h2 class="games-title">🎮 Mini Games & Trò Chơi 🎮</h2>
+            <div class="games-grid">
+                <div class="game-card" onclick="openGame('love-test')">
+                    <div class="game-icon">💕</div>
+                    <h3>Test Tình Yêu</h3>
+                    <p>Kiểm tra mức độ yêu thương</p>
+                </div>
+                <div class="game-card" onclick="openGame('memory-game')">
+                    <div class="game-icon">🧠</div>
+                    <h3>Trò Chơi Trí Nhớ</h3>
+                    <p>Ghép đôi hình ảnh</p>
+                </div>
+                <div class="game-card" onclick="openGame('love-letter')">
+                    <div class="game-icon">💌</div>
+                    <h3>Viết Thư Tình</h3>
+                    <p>Tạo thư tình ngẫu nhiên</p>
+                </div>
+                <div class="game-card" onclick="openGame('fortune-teller')">
+                    <div class="game-icon">🔮</div>
+                    <h3>Bói Tình Duyên</h3>
+                    <p>Xem vận may tình cảm</p>
+                </div>
+            </div>
         </div>
 
         <!-- Danh sách đã lưu -->
         <div class="list-container">
             <div class="list-header">
                 <h2 class="list-title">📋 Danh Sách Đã Đăng Ký</h2>
-                <button id="refreshBtn" class="refresh-btn" onclick="refreshData()">
-                    <i class="fas fa-sync-alt"></i>
-                    Làm mới
-                </button>
+                <div class="header-buttons">
+                    <button id="refreshBtn" class="refresh-btn" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Làm mới
+                    </button>
+                    <button id="adminBtn" class="admin-btn" onclick="openAdmin()">
+                        <i class="fas fa-cog"></i>
+                        Admin
+                    </button>
+                </div>
             </div>
             <div id="drinkingList" class="drinking-list">
                 <div class="empty-state">
@@ -155,6 +436,111 @@
     <!-- Hiệu ứng trái tim -->
     <div id="heartAnimation" class="heart-animation">
         <div class="growing-heart">💖</div>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content game-modal">
+            <div class="modal-header">
+                <h3 id="gameTitle">🎮 Mini Game</h3>
+                <button class="close-btn" onclick="closeGameModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="gameContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content admin-modal">
+            <div class="modal-header">
+                <h3>⚙️ Trang Quản Lý Admin</h3>
+                <button class="close-btn" onclick="closeAdminModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="switchAdminTab('stats')">📊 Thống Kê</button>
+                    <button class="admin-tab" onclick="switchAdminTab('manage')">📝 Quản Lý</button>
+                    <button class="admin-tab" onclick="switchAdminTab('settings')">⚙️ Cài Đặt</button>
+                </div>
+                
+                <div id="adminContent">
+                    <!-- Stats Tab -->
+                    <div id="statsTab" class="admin-tab-content active">
+                        <h4>📊 Thống Kê Tổng Quan</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">📋</div>
+                                <div class="stat-info">
+                                    <h5>Tổng đơn xin phép</h5>
+                                    <span id="totalRequests">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🍻</div>
+                                <div class="stat-info">
+                                    <h5>Đi nhậu</h5>
+                                    <span id="drinkingCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🍽️</div>
+                                <div class="stat-info">
+                                    <h5>Đi ăn</h5>
+                                    <span id="eatingCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🛍️</div>
+                                <div class="stat-info">
+                                    <h5>Mua sắm</h5>
+                                    <span id="shoppingCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Manage Tab -->
+                    <div id="manageTab" class="admin-tab-content">
+                        <h4>📝 Quản Lý Đơn Xin Phép</h4>
+                        <div class="admin-actions">
+                            <button class="admin-action-btn" onclick="exportData()">
+                                <i class="fas fa-download"></i> Xuất dữ liệu
+                            </button>
+                            <button class="admin-action-btn" onclick="clearAllData()">
+                                <i class="fas fa-trash"></i> Xóa tất cả
+                            </button>
+                            <button class="admin-action-btn" onclick="backupData()">
+                                <i class="fas fa-save"></i> Backup
+                            </button>
+                        </div>
+                        <div id="adminRecordList" class="admin-record-list">
+                            <!-- Records will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Tab -->
+                    <div id="settingsTab" class="admin-tab-content">
+                        <h4>⚙️ Cài Đặt Hệ Thống</h4>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <label>Auto-refresh (giây):</label>
+                                <input type="number" id="autoRefreshInterval" value="30" min="10" max="300">
+                            </div>
+                            <div class="setting-item">
+                                <label>Thông báo:</label>
+                                <input type="checkbox" id="enableNotifications" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label>Chế độ tối:</label>
+                                <input type="checkbox" id="darkMode">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Thông báo -->

@@ -82,6 +82,42 @@ body {
     50% { transform: scale(1.05); }
 }
 
+/* Navigation tabs */
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.nav-tab {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ffb3d1;
+    border-radius: 25px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-tab:hover {
+    background: linear-gradient(45deg, #e91e63, #ff6b9d);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+}
+
+.nav-tab.active {
+    background: linear-gradient(45deg, #e91e63, #ff6b9d);
+    color: white;
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+}
+
 /* Form styles */
 .form-container {
     background: rgba(255, 255, 255, 0.95);
@@ -91,6 +127,14 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     backdrop-filter: blur(10px);
     animation: slideInUp 0.8s ease-out;
+}
+
+.permission-form {
+    display: none;
+}
+
+.permission-form.active {
+    display: block;
 }
 
 @keyframes slideInUp {
@@ -192,6 +236,80 @@ body {
     animation: slideInUp 0.8s ease-out 0.2s both;
 }
 
+/* Games section */
+.games-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    animation: slideInUp 0.8s ease-out 0.1s both;
+}
+
+.games-title {
+    text-align: center;
+    color: #e91e63;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    font-family: 'Dancing Script', cursive;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.game-card {
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    border: 2px solid #ffb3d1;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s;
+}
+
+.game-card:hover::before {
+    left: 100%;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(233, 30, 99, 0.2);
+    border-color: #e91e63;
+}
+
+.game-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.game-card h3 {
+    color: #e91e63;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.game-card p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
 .list-header {
     display: flex;
     justify-content: space-between;
@@ -199,6 +317,12 @@ body {
     margin-bottom: 30px;
     flex-wrap: wrap;
     gap: 15px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .list-title {
@@ -231,6 +355,334 @@ body {
 
 .refresh-btn:active {
     transform: translateY(0);
+}
+
+.admin-btn {
+    background: linear-gradient(45deg, #9C27B0, #E1BEE7);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.5);
+}
+
+.admin-btn:active {
+    transform: translateY(0);
+}
+
+/* Admin Modal Styles */
+.admin-modal {
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ffb3d1;
+}
+
+.admin-tab {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #666;
+}
+
+.admin-tab:hover {
+    color: #e91e63;
+}
+
+.admin-tab.active {
+    color: #e91e63;
+    border-bottom-color: #e91e63;
+}
+
+.admin-tab-content {
+    display: none;
+}
+
+.admin-tab-content.active {
+    display: block;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    border: 2px solid #ffb3d1;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-info h5 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.stat-info span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e91e63;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-action-btn {
+    background: linear-gradient(45deg, #FF9800, #FFB74D);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.admin-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+}
+
+.admin-record-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 2px solid #ffb3d1;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.admin-record-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-record-info h6 {
+    margin: 0 0 5px 0;
+    color: #e91e63;
+}
+
+.admin-record-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.admin-record-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.admin-record-actions button {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.settings-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.setting-item label {
+    font-weight: 600;
+    color: #333;
+}
+
+.setting-item input {
+    padding: 8px 12px;
+    border: 2px solid #ffb3d1;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+/* Game Modal Styles */
+.game-modal {
+    max-width: 600px;
+}
+
+.game-content {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Game specific styles */
+.love-test h4, .memory-game h4, .love-letter h4, .fortune-teller h4 {
+    color: #e91e63;
+    margin-bottom: 20px;
+}
+
+.test-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.love-yes, .love-no, .generate-btn, .retry-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.love-yes {
+    background: linear-gradient(45deg, #4CAF50, #66BB6A);
+    color: white;
+}
+
+.love-no {
+    background: linear-gradient(45deg, #f44336, #ef5350);
+    color: white;
+}
+
+.generate-btn, .retry-btn {
+    background: linear-gradient(45deg, #e91e63, #ff6b9d);
+    color: white;
+}
+
+.love-yes:hover, .love-no:hover, .generate-btn:hover, .retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-width: 200px;
+    margin: 20px auto;
+}
+
+.memory-card {
+    background: linear-gradient(45deg, #ff6b9d, #ff8e9b);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.memory-card:hover {
+    transform: scale(1.05);
+}
+
+.letter-content {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+#letterText {
+    font-style: italic;
+    color: #e91e63;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.crystal-ball {
+    background: radial-gradient(circle, #9C27B0, #673AB7);
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(156, 39, 176, 0.3);
+}
+
+.crystal-ball:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 40px rgba(156, 39, 176, 0.5);
+}
+
+.ball {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.crystal-ball p {
+    color: white;
+    font-weight: 600;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.fortune-text {
+    background: linear-gradient(45deg, #FF9800, #FFB74D);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
 .drinking-list {
