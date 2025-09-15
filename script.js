@@ -135,6 +135,59 @@ function handleFormSubmit(e) {
             workEndTime: formData.get('workEndTime'),
             workCommitment: formData.get('workCommitment')
         };
+    } else if (formType === 'study') {
+        recordData = {
+            ...recordData,
+            studyType: formData.get('studyType'),
+            studySubject: formData.get('studySubject'),
+            studyLocation: formData.get('studyLocation'),
+            studyWith: formData.get('studyWith'),
+            studyStartTime: formData.get('studyStartTime'),
+            studyEndTime: formData.get('studyEndTime'),
+            studyReason: formData.get('studyReason')
+        };
+    } else if (formType === 'sports') {
+        recordData = {
+            ...recordData,
+            sportType: formData.get('sportType'),
+            sportLocation: formData.get('sportLocation'),
+            sportWith: formData.get('sportWith'),
+            sportStartTime: formData.get('sportStartTime'),
+            sportEndTime: formData.get('sportEndTime'),
+            sportIntensity: formData.get('sportIntensity'),
+            sportCommitment: formData.get('sportCommitment')
+        };
+    } else if (formType === 'health') {
+        recordData = {
+            ...recordData,
+            healthType: formData.get('healthType'),
+            healthLocation: formData.get('healthLocation'),
+            healthDoctor: formData.get('healthDoctor'),
+            healthSymptoms: formData.get('healthSymptoms'),
+            healthStartTime: formData.get('healthStartTime'),
+            healthEndTime: formData.get('healthEndTime'),
+            healthUrgency: formData.get('healthUrgency')
+        };
+    } else if (formType === 'family') {
+        recordData = {
+            ...recordData,
+            familyType: formData.get('familyType'),
+            familyWith: formData.get('familyWith'),
+            familyLocation: formData.get('familyLocation'),
+            familyStartTime: formData.get('familyStartTime'),
+            familyEndTime: formData.get('familyEndTime'),
+            familyReason: formData.get('familyReason')
+        };
+    } else if (formType === 'other') {
+        recordData = {
+            ...recordData,
+            otherType: formData.get('otherType'),
+            otherWith: formData.get('otherWith'),
+            otherLocation: formData.get('otherLocation'),
+            otherStartTime: formData.get('otherStartTime'),
+            otherEndTime: formData.get('otherEndTime'),
+            otherDescription: formData.get('otherDescription')
+        };
     }
     
     // Show confirmation modal
@@ -165,6 +218,19 @@ function closeConfirmationModal() {
 
 // Handle stay home button
 function handleStayHome() {
+    // Save the stay home decision
+    const stayHomeData = {
+        id: Date.now(),
+        type: 'stay_home_decision',
+        action: 'stay_home',
+        originalData: confirmationModal.drinkingData,
+        timestamp: new Date().toLocaleString('vi-VN')
+    };
+    
+    // Save stay home decision to records
+    allRecords.push(stayHomeData);
+    saveAllRecords();
+    
     closeConfirmationModal();
     showHeartAnimation();
     showNotification('💕 Em yêu là số 1! Cảm ơn em đã chọn ở nhà với anh! 💕', 'success');
@@ -173,6 +239,20 @@ function handleStayHome() {
 // Handle confirm button
 function handleConfirm() {
     confirmationAttempts++;
+    
+    // Always save the confirmation attempt
+    const confirmationData = {
+        id: Date.now(),
+        type: 'confirmation_attempt',
+        attempt: confirmationAttempts,
+        action: 'confirm',
+        originalData: confirmationModal.drinkingData,
+        timestamp: new Date().toLocaleString('vi-VN')
+    };
+    
+    // Save confirmation attempt to records
+    allRecords.push(confirmationData);
+    saveAllRecords();
     
     if (confirmationAttempts <= 3) {
         // Update button states based on attempt
@@ -185,7 +265,7 @@ function handleConfirm() {
             }, 500);
         }
     } else {
-        // After 3 attempts, actually save the data
+        // After 3 attempts, actually save the original data
         saveDrinkingRecord(confirmationModal.drinkingData);
         closeConfirmationModal();
         showNotification('😢 Đã lưu lịch nhậu... Người yêu sẽ buồn lắm đấy! 😢', 'warning');
@@ -308,15 +388,21 @@ async function saveDrinkingRecord(data) {
         
         if (response.ok) {
             console.log('Dữ liệu đã được lưu vào JSONBin');
+            // Show success notification
+            showNotification('✅ Đã lưu thành công! Dữ liệu đã được đồng bộ.', 'success');
         } else {
             throw new Error('Lỗi khi lưu vào JSONBin');
         }
     } catch (error) {
         console.log('Lưu vào localStorage làm backup');
         localStorage.setItem('allRecords', JSON.stringify(allRecords));
+        showNotification('⚠️ Đã lưu vào bộ nhớ cục bộ. Kiểm tra kết nối mạng.', 'warning');
     }
     
+    // Always update UI immediately
     renderDrinkingList();
+    updateAdminStats();
+    
     // Reset the current form
     const currentForm = document.querySelector(`.permission-form.active`);
     if (currentForm) {
@@ -349,24 +435,47 @@ function renderDrinkingList() {
             shopping: '🛍️',
             travel: '✈️',
             hanging: '🎮',
-            work: '💼'
+            work: '💼',
+            study: '🎓',
+            sports: '🏃‍♂️',
+            health: '🏥',
+            family: '👨‍👩‍👧‍👦',
+            other: '📝',
+            confirmation_attempt: '💔',
+            stay_home_decision: '💕'
         };
         
         const icon = icons[record.type] || '📋';
-        const title = record.type === 'drinking' ? record.drinkingWith : 
-                     record.type === 'eating' ? record.eatingWith :
-                     record.type === 'shopping' ? record.shoppingWith :
-                     record.type === 'travel' ? record.travelDestination :
-                     record.type === 'hanging' ? record.hangingWith :
-                     record.type === 'work' ? record.workType : 'Hoạt động';
+        
+        let title = 'Hoạt động';
+        if (record.type === 'confirmation_attempt') {
+            title = `Lần xác nhận thứ ${record.attempt}`;
+        } else if (record.type === 'stay_home_decision') {
+            title = 'Quyết định ở nhà';
+        } else {
+            title = record.type === 'drinking' ? record.drinkingWith : 
+                   record.type === 'eating' ? record.eatingWith :
+                   record.type === 'shopping' ? record.shoppingWith :
+                   record.type === 'travel' ? record.travelDestination :
+                   record.type === 'hanging' ? record.hangingWith :
+                   record.type === 'work' ? record.workType :
+                   record.type === 'study' ? record.studySubject :
+                   record.type === 'sports' ? record.sportType :
+                   record.type === 'health' ? record.healthType :
+                   record.type === 'family' ? record.familyType :
+                   record.type === 'other' ? record.otherType : 'Hoạt động';
+        }
         
         return `
-        <div class="drinking-item" onclick="showDetail(${record.id})">
+            <div class="drinking-item" onclick="showDetail(${record.id})">
                 <h3>${icon} ${title}</h3>
                 <p><strong>Loại:</strong> ${getTypeDisplayName(record.type)}</p>
-                <p><strong>Thời gian:</strong> ${record.startTime || record.travelStartDate} - ${record.endTime || record.travelEndDate}</p>
-            <p><strong>Ngày tạo:</strong> ${record.createdAt}</p>
-        </div>
+                ${record.type === 'confirmation_attempt' || record.type === 'stay_home_decision' ? 
+                    `<p><strong>Hành động:</strong> ${record.action === 'confirm' ? 'Xác nhận' : 'Ở nhà'}</p>` :
+                    `<p><strong>Thời gian:</strong> ${record.startTime || record.travelStartDate || record.studyStartTime || record.sportStartTime || record.healthStartTime || record.familyStartTime || record.otherStartTime} - ${record.endTime || record.travelEndDate || record.studyEndTime || record.sportEndTime || record.healthEndTime || record.familyEndTime || record.otherEndTime}</p>`
+                }
+                <p><strong>Ngày tạo:</strong> ${record.createdAt || record.timestamp}</p>
+            </div>
         `;
     }).join('');
 }
@@ -379,7 +488,14 @@ function getTypeDisplayName(type) {
         shopping: 'Mua sắm',
         travel: 'Du lịch',
         hanging: 'Đi chơi',
-        work: 'Công việc'
+        work: 'Công việc',
+        study: 'Học tập',
+        sports: 'Thể thao',
+        health: 'Sức khỏe',
+        family: 'Gia đình',
+        other: 'Khác',
+        confirmation_attempt: 'Lần xác nhận',
+        stay_home_decision: 'Quyết định ở nhà'
     };
     return names[type] || type;
 }
@@ -470,6 +586,17 @@ function showDetail(id) {
             <p><strong>Giờ bắt đầu:</strong> ${record.workStartTime}</p>
             <p><strong>Giờ kết thúc:</strong> ${record.workEndTime}</p>
             <p><strong>Cam kết:</strong> ${record.workCommitment}</p>
+        `;
+    } else if (record.type === 'confirmation_attempt') {
+        detailHTML += `
+            <p><strong>Lần xác nhận:</strong> ${record.attempt}</p>
+            <p><strong>Hành động:</strong> Xác nhận đi nhậu</p>
+            <p><strong>Dữ liệu gốc:</strong> ${record.originalData ? JSON.stringify(record.originalData, null, 2) : 'Không có'}</p>
+        `;
+    } else if (record.type === 'stay_home_decision') {
+        detailHTML += `
+            <p><strong>Hành động:</strong> Quyết định ở nhà</p>
+            <p><strong>Dữ liệu gốc:</strong> ${record.originalData ? JSON.stringify(record.originalData, null, 2) : 'Không có'}</p>
         `;
     }
     
@@ -756,6 +883,145 @@ function openGame(gameType) {
                 </div>
             `;
             break;
+            
+        case 'love-quiz':
+            gameTitle.textContent = '🧩 Quiz Tình Yêu 🧩';
+            gameContent.innerHTML = `
+                <div class="love-quiz">
+                    <h4>Kiểm tra hiểu biết về tình yêu!</h4>
+                    <div id="quizContent">
+                        <div class="quiz-question">
+                            <p id="questionText">Câu hỏi 1: Tình yêu đích thực là gì?</p>
+                            <div class="quiz-options">
+                                <button onclick="answerQuiz(1)" class="quiz-option">A. Chỉ là cảm xúc nhất thời</button>
+                                <button onclick="answerQuiz(2)" class="quiz-option">B. Sự hy sinh và quan tâm lẫn nhau</button>
+                                <button onclick="answerQuiz(3)" class="quiz-option">C. Sự hấp dẫn về thể xác</button>
+                                <button onclick="answerQuiz(4)" class="quiz-option">D. Chỉ là sự tương hợp</button>
+                            </div>
+                        </div>
+                        <div class="quiz-score">
+                            <p>Điểm: <span id="quizScore">0</span>/5</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initQuiz();
+            break;
+            
+        case 'heart-calculator':
+            gameTitle.textContent = '💯 Máy Tính Tình Yêu 💯';
+            gameContent.innerHTML = `
+                <div class="heart-calculator">
+                    <h4>Tính độ tương hợp tình yêu!</h4>
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label>Tên của bạn:</label>
+                            <input type="text" id="yourName" placeholder="Nhập tên của bạn">
+                        </div>
+                        <div class="form-group">
+                            <label>Tên người yêu:</label>
+                            <input type="text" id="loverName" placeholder="Nhập tên người yêu">
+                        </div>
+                        <button onclick="calculateLove()" class="calculate-btn">Tính Tình Yêu</button>
+                    </div>
+                    <div id="loveResult" class="love-result"></div>
+                </div>
+            `;
+            break;
+            
+        case 'love-story':
+            gameTitle.textContent = '📖 Câu Chuyện Tình Yêu 📖';
+            gameContent.innerHTML = `
+                <div class="love-story">
+                    <h4>Tạo câu chuyện tình yêu ngẫu nhiên!</h4>
+                    <div class="story-content">
+                        <p id="storyText">Đang tạo câu chuyện...</p>
+                        <button onclick="generateStory()" class="generate-story-btn">Tạo câu chuyện mới</button>
+                    </div>
+                </div>
+            `;
+            generateStory();
+            break;
+            
+        case 'couple-challenge':
+            gameTitle.textContent = '🏆 Thử Thách Cặp Đôi 🏆';
+            gameContent.innerHTML = `
+                <div class="couple-challenge">
+                    <h4>Thử thách tình yêu dành cho cặp đôi!</h4>
+                    <div class="challenge-content">
+                        <div class="challenge-card" onclick="getChallenge()">
+                            <div class="challenge-icon">💕</div>
+                            <p>Nhấn để nhận thử thách</p>
+                        </div>
+                        <div id="challengeResult" class="challenge-result"></div>
+                    </div>
+                </div>
+            `;
+            break;
+            
+        case 'love-music':
+            gameTitle.textContent = '🎵 Nhạc Tình Yêu 🎵';
+            gameContent.innerHTML = `
+                <div class="love-music">
+                    <h4>Gợi ý bài hát lãng mạn!</h4>
+                    <div class="music-content">
+                        <div class="music-card">
+                            <div class="music-info">
+                                <h5 id="songTitle">Đang tìm bài hát...</h5>
+                                <p id="songArtist">Nghệ sĩ</p>
+                            </div>
+                            <button onclick="getLoveSong()" class="music-btn">🎵 Bài hát mới</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            getLoveSong();
+            break;
+            
+        case 'date-ideas':
+            gameTitle.textContent = '💡 Ý Tưởng Hẹn Hò 💡';
+            gameContent.innerHTML = `
+                <div class="date-ideas">
+                    <h4>Gợi ý hoạt động hẹn hò lãng mạn!</h4>
+                    <div class="ideas-content">
+                        <div class="idea-card">
+                            <h5 id="ideaTitle">Đang tìm ý tưởng...</h5>
+                            <p id="ideaDescription">Mô tả hoạt động</p>
+                            <p id="ideaLocation">Địa điểm</p>
+                        </div>
+                        <button onclick="getDateIdea()" class="idea-btn">💡 Ý tưởng mới</button>
+                    </div>
+                </div>
+            `;
+            getDateIdea();
+            break;
+            
+        case 'love-calendar':
+            gameTitle.textContent = '📅 Lịch Tình Yêu 📅';
+            gameContent.innerHTML = `
+                <div class="love-calendar">
+                    <h4>Ngày kỷ niệm đặc biệt trong tình yêu!</h4>
+                    <div class="calendar-content">
+                        <div class="special-dates">
+                            <h5>Những ngày đặc biệt:</h5>
+                            <ul id="specialDatesList">
+                                <li>💕 Ngày Valentine (14/2)</li>
+                                <li>🌹 Ngày Phụ nữ Việt Nam (20/10)</li>
+                                <li>💝 Ngày Quốc tế Phụ nữ (8/3)</li>
+                                <li>💐 Ngày của Mẹ</li>
+                                <li>🎂 Ngày sinh nhật đặc biệt</li>
+                            </ul>
+                        </div>
+                        <div class="anniversary-calculator">
+                            <h5>Tính ngày kỷ niệm:</h5>
+                            <input type="date" id="anniversaryDate" placeholder="Ngày bắt đầu yêu">
+                            <button onclick="calculateAnniversary()" class="anniversary-btn">Tính kỷ niệm</button>
+                            <div id="anniversaryResult"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            break;
     }
 }
 
@@ -843,13 +1109,34 @@ function updateAdminStats() {
         shopping: allRecords.filter(r => r.type === 'shopping').length,
         travel: allRecords.filter(r => r.type === 'travel').length,
         hanging: allRecords.filter(r => r.type === 'hanging').length,
-        work: allRecords.filter(r => r.type === 'work').length
+        work: allRecords.filter(r => r.type === 'work').length,
+        study: allRecords.filter(r => r.type === 'study').length,
+        sports: allRecords.filter(r => r.type === 'sports').length,
+        health: allRecords.filter(r => r.type === 'health').length,
+        family: allRecords.filter(r => r.type === 'family').length,
+        other: allRecords.filter(r => r.type === 'other').length,
+        confirmations: allRecords.filter(r => r.type === 'confirmation_attempt').length,
+        stayHome: allRecords.filter(r => r.type === 'stay_home_decision').length
     };
     
     document.getElementById('totalRequests').textContent = stats.total;
     document.getElementById('drinkingCount').textContent = stats.drinking;
     document.getElementById('eatingCount').textContent = stats.eating;
     document.getElementById('shoppingCount').textContent = stats.shopping;
+    
+    // Add more stats if elements exist
+    if (document.getElementById('studyCount')) {
+        document.getElementById('studyCount').textContent = stats.study;
+    }
+    if (document.getElementById('sportsCount')) {
+        document.getElementById('sportsCount').textContent = stats.sports;
+    }
+    if (document.getElementById('confirmationsCount')) {
+        document.getElementById('confirmationsCount').textContent = stats.confirmations;
+    }
+    if (document.getElementById('stayHomeCount')) {
+        document.getElementById('stayHomeCount').textContent = stats.stayHome;
+    }
 }
 
 function loadAdminRecords() {
@@ -895,10 +1182,19 @@ async function saveAllRecords() {
         });
         
         if (response.ok) {
-            console.log('Dữ liệu đã được lưu');
+            console.log('Dữ liệu đã được lưu vào JSONBin');
+            // Auto update UI after successful save
+            renderDrinkingList();
+            updateAdminStats();
+        } else {
+            throw new Error('Lỗi khi lưu vào JSONBin');
         }
     } catch (error) {
+        console.log('Lưu vào localStorage làm backup');
         localStorage.setItem('allRecords', JSON.stringify(allRecords));
+        // Still update UI even if JSONBin fails
+        renderDrinkingList();
+        updateAdminStats();
     }
 }
 
@@ -927,6 +1223,270 @@ function clearAllData() {
 function backupData() {
     localStorage.setItem('backup_' + Date.now(), JSON.stringify(allRecords));
     showNotification('Đã backup dữ liệu!', 'success');
+}
+
+// New game functions
+let quizScore = 0;
+let currentQuestion = 0;
+
+function initQuiz() {
+    quizScore = 0;
+    currentQuestion = 0;
+    updateQuizQuestion();
+}
+
+function updateQuizQuestion() {
+    const questions = [
+        {
+            question: "Tình yêu đích thực là gì?",
+            options: [
+                "Chỉ là cảm xúc nhất thời",
+                "Sự hy sinh và quan tâm lẫn nhau",
+                "Sự hấp dẫn về thể xác",
+                "Chỉ là sự tương hợp"
+            ],
+            correct: 2
+        },
+        {
+            question: "Điều quan trọng nhất trong tình yêu là gì?",
+            options: [
+                "Ngoại hình",
+                "Tiền bạc",
+                "Sự tin tưởng",
+                "Sở thích chung"
+            ],
+            correct: 3
+        },
+        {
+            question: "Khi yêu, bạn nên làm gì khi có xung đột?",
+            options: [
+                "Im lặng và tránh né",
+                "Tranh cãi đến cùng",
+                "Lắng nghe và thảo luận",
+                "Đổ lỗi cho đối phương"
+            ],
+            correct: 3
+        },
+        {
+            question: "Tình yêu bền vững cần gì?",
+            options: [
+                "Chỉ cần cảm xúc",
+                "Sự kiên nhẫn và nỗ lực",
+                "May mắn",
+                "Sự hoàn hảo"
+            ],
+            correct: 2
+        },
+        {
+            question: "Cách thể hiện tình yêu tốt nhất là gì?",
+            options: [
+                "Quà cáp đắt tiền",
+                "Lời nói ngọt ngào",
+                "Hành động quan tâm hàng ngày",
+                "Khoe khoang trên mạng xã hội"
+            ],
+            correct: 3
+        }
+    ];
+
+    if (currentQuestion < questions.length) {
+        const q = questions[currentQuestion];
+        document.getElementById('questionText').textContent = `Câu ${currentQuestion + 1}: ${q.question}`;
+        
+        const options = document.querySelectorAll('.quiz-option');
+        options.forEach((option, index) => {
+            option.textContent = `${String.fromCharCode(65 + index)}. ${q.options[index]}`;
+        });
+    } else {
+        showQuizResult();
+    }
+}
+
+function answerQuiz(selectedAnswer) {
+    const questions = [
+        { correct: 2 }, { correct: 3 }, { correct: 3 }, { correct: 2 }, { correct: 3 }
+    ];
+    
+    if (selectedAnswer === questions[currentQuestion].correct) {
+        quizScore++;
+        showNotification('Chính xác! 💖', 'success');
+    } else {
+        showNotification('Sai rồi! 💔', 'error');
+    }
+    
+    currentQuestion++;
+    setTimeout(updateQuizQuestion, 1000);
+}
+
+function showQuizResult() {
+    const result = quizScore >= 4 ? 'Xuất sắc! 💖' : 
+                   quizScore >= 3 ? 'Tốt! 💕' : 
+                   quizScore >= 2 ? 'Khá! 💗' : 'Cần cố gắng hơn! 💔';
+    
+    document.getElementById('quizContent').innerHTML = `
+        <div class="quiz-result">
+            <h4>Kết quả Quiz Tình Yêu</h4>
+            <div class="result-score">
+                <p>Điểm số: <span style="font-size: 2rem; color: #e91e63;">${quizScore}/5</span></p>
+                <p>${result}</p>
+            </div>
+            <button onclick="initQuiz()" class="retry-btn">Làm lại</button>
+        </div>
+    `;
+}
+
+function calculateLove() {
+    const yourName = document.getElementById('yourName').value;
+    const loverName = document.getElementById('loverName').value;
+    
+    if (!yourName || !loverName) {
+        showNotification('Vui lòng nhập đầy đủ tên!', 'error');
+        return;
+    }
+    
+    // Simple love calculation based on name length and characters
+    const score = Math.abs((yourName.length * loverName.length) % 100) + 1;
+    
+    const result = document.getElementById('loveResult');
+    result.innerHTML = `
+        <div class="love-score">
+            <h3>💕 Kết quả tính toán tình yêu 💕</h3>
+            <div class="score-circle">
+                <span class="score-number">${score}%</span>
+                <p>Tương hợp</p>
+            </div>
+            <div class="love-message">
+                ${getLoveMessage(score)}
+            </div>
+        </div>
+    `;
+}
+
+function getLoveMessage(score) {
+    if (score >= 90) return "💖 Tình yêu hoàn hảo! Cặp đôi lý tưởng!";
+    if (score >= 80) return "💕 Tình yêu rất mạnh mẽ! Hãy trân trọng nhau!";
+    if (score >= 70) return "💗 Tình yêu tốt đẹp! Cần nỗ lực thêm!";
+    if (score >= 60) return "💝 Tình yêu khá ổn! Cố gắng hiểu nhau hơn!";
+    if (score >= 50) return "💘 Tình yêu trung bình! Cần nhiều thời gian!";
+    return "💔 Cần nỗ lực nhiều hơn để hiểu nhau!";
+}
+
+function generateStory() {
+    const stories = [
+        "Một ngày nọ, có hai trái tim gặp nhau trong một quán cà phê nhỏ. Từ ánh mắt đầu tiên, họ biết rằng đây chính là định mệnh. Tình yêu của họ nở hoa như những bông hồng trong vườn, đẹp đẽ và thơm ngát.",
+        "Trong một buổi chiều mưa, anh đã chia sẻ chiếc ô với cô gái lạ. Từ khoảnh khắc đó, họ bắt đầu một câu chuyện tình yêu đẹp như cổ tích. Mỗi ngày cùng nhau trở thành một trang mới trong cuốn sách hạnh phúc.",
+        "Hai người bạn thân từ nhỏ, qua nhiều năm tháng, tình bạn đã chuyển thành tình yêu. Họ hiểu nhau hơn ai hết, yêu thương nhau bằng cả trái tim và tâm hồn.",
+        "Trong một chuyến du lịch, họ gặp nhau tình cờ. Từ những cuộc trò chuyện ngắn ngủi, họ nhận ra sự tương hợp kỳ lạ. Tình yêu nảy nở như hoa nở trong mùa xuân.",
+        "Cô gái đã cứu chú chó của anh trong một ngày mưa. Từ hành động nhân ái đó, tình yêu đã nảy nở. Họ yêu nhau không chỉ vì vẻ ngoài mà còn vì tấm lòng nhân hậu."
+    ];
+    
+    const randomStory = stories[Math.floor(Math.random() * stories.length)];
+    document.getElementById('storyText').textContent = randomStory;
+}
+
+function getChallenge() {
+    const challenges = [
+        "💕 Hãy khen người yêu 3 điều mà bạn thích nhất về họ",
+        "💖 Viết một lá thư tình bằng tay và gửi cho người yêu",
+        "💗 Nấu một bữa ăn ngon cho người yêu",
+        "💝 Tạo một playlist nhạc yêu thương và chia sẻ",
+        "💘 Dành một ngày hoàn toàn cho người yêu, không điện thoại",
+        "💕 Chụp ảnh cùng nhau và in ra làm kỷ niệm",
+        "💖 Học một bài hát tình yêu để hát cho người yêu nghe",
+        "💗 Viết nhật ký về những khoảnh khắc hạnh phúc cùng nhau",
+        "💝 Tạo một video compilation về những kỷ niệm đẹp",
+        "💘 Thực hiện một điều mà người yêu từng mong ước"
+    ];
+    
+    const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+    document.getElementById('challengeResult').innerHTML = `
+        <div class="challenge-text">${randomChallenge}</div>
+        <button onclick="getChallenge()" class="retry-btn">Thử thách mới</button>
+    `;
+}
+
+function getLoveSong() {
+    const songs = [
+        { title: "Anh Ơi Ở Lại", artist: "Chi Pu" },
+        { title: "Chúng Ta Của Hiện Tại", artist: "Sơn Tùng M-TP" },
+        { title: "Em Gì Ơi", artist: "Jack & K-ICM" },
+        { title: "Nơi Này Có Anh", artist: "Sơn Tùng M-TP" },
+        { title: "Yêu Đương Khó Quá", artist: "Lou Hoàng" },
+        { title: "Chạy Ngay Đi", artist: "Sơn Tùng M-TP" },
+        { title: "Em Ơi", artist: "Karik ft. Orange" },
+        { title: "Bước Qua Mùa Cô Đơn", artist: "Vũ" },
+        { title: "Sóng Gió", artist: "Jack & K-ICM" },
+        { title: "Đừng Như Thói Quen", artist: "Jaykii" }
+    ];
+    
+    const randomSong = songs[Math.floor(Math.random() * songs.length)];
+    document.getElementById('songTitle').textContent = randomSong.title;
+    document.getElementById('songArtist').textContent = randomSong.artist;
+}
+
+function getDateIdea() {
+    const ideas = [
+        {
+            title: "Hẹn hò tại quán cà phê sách",
+            description: "Cùng nhau đọc sách, thưởng thức cà phê và trò chuyện về những cuốn sách yêu thích",
+            location: "Quán cà phê sách, thư viện, hoặc quán cà phê yên tĩnh"
+        },
+        {
+            title: "Dạo phố vào buổi tối",
+            description: "Đi bộ cùng nhau trên những con phố đẹp, ngắm cảnh và chia sẻ những câu chuyện",
+            location: "Phố cổ, khu phố đi bộ, hoặc bờ hồ"
+        },
+        {
+            title: "Xem phim tại nhà",
+            description: "Chọn một bộ phim lãng mạn, chuẩn bị bỏng ngô và cùng nhau thưởng thức",
+            location: "Nhà của một trong hai người"
+        },
+        {
+            title: "Cooking date",
+            description: "Cùng nhau nấu ăn, thử những món mới và tận hưởng thời gian bên nhau",
+            location: "Nhà bếp hoặc lớp học nấu ăn"
+        },
+        {
+            title: "Picnic trong công viên",
+            description: "Chuẩn bị đồ ăn và cùng nhau dã ngoại trong công viên, ngắm thiên nhiên",
+            location: "Công viên, vườn hoa, hoặc bãi biển"
+        }
+    ];
+    
+    const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+    document.getElementById('ideaTitle').textContent = randomIdea.title;
+    document.getElementById('ideaDescription').textContent = randomIdea.description;
+    document.getElementById('ideaLocation').textContent = `📍 ${randomIdea.location}`;
+}
+
+function calculateAnniversary() {
+    const anniversaryDate = document.getElementById('anniversaryDate').value;
+    
+    if (!anniversaryDate) {
+        showNotification('Vui lòng chọn ngày kỷ niệm!', 'error');
+        return;
+    }
+    
+    const startDate = new Date(anniversaryDate);
+    const today = new Date();
+    const diffTime = Math.abs(today - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const years = Math.floor(diffDays / 365);
+    const months = Math.floor((diffDays % 365) / 30);
+    const days = diffDays % 30;
+    
+    document.getElementById('anniversaryResult').innerHTML = `
+        <div class="anniversary-result">
+            <h5>💕 Thời gian yêu nhau 💕</h5>
+            <div class="time-display">
+                <p><strong>${years}</strong> năm</p>
+                <p><strong>${months}</strong> tháng</p>
+                <p><strong>${days}</strong> ngày</p>
+            </div>
+            <p class="total-days">Tổng cộng: <strong>${diffDays}</strong> ngày yêu nhau</p>
+        </div>
+    `;
 }
 
 // Start romantic effects

@@ -45,6 +45,21 @@
             <button class="nav-tab" onclick="switchTab('work')">
                 <i class="fas fa-briefcase"></i> Công Việc
             </button>
+            <button class="nav-tab" onclick="switchTab('study')">
+                <i class="fas fa-graduation-cap"></i> Học Tập
+            </button>
+            <button class="nav-tab" onclick="switchTab('sports')">
+                <i class="fas fa-dumbbell"></i> Thể Thao
+            </button>
+            <button class="nav-tab" onclick="switchTab('health')">
+                <i class="fas fa-heartbeat"></i> Sức Khỏe
+            </button>
+            <button class="nav-tab" onclick="switchTab('family')">
+                <i class="fas fa-users"></i> Gia Đình
+            </button>
+            <button class="nav-tab" onclick="switchTab('other')">
+                <i class="fas fa-ellipsis-h"></i> Khác
+            </button>
         </div>
 
         <!-- Form nhập liệu -->
@@ -55,23 +70,51 @@
                 
                 <div class="form-group">
                     <label for="drinkingWith">Nhậu với ai (điền tất cả những người trong bàn nhậu):</label>
-                    <input type="text" id="drinkingWith" name="drinkingWith" required>
+                    <input type="text" id="drinkingWith" name="drinkingWith" placeholder="Ví dụ: Anh Minh, Chị Lan, Bạn Nam..." required>
                 </div>
 
                 <div class="form-group">
                     <label for="guesser">Người đưa đoán đi nhậu:</label>
-                    <input type="text" id="guesser" name="guesser" required>
+                    <input type="text" id="guesser" name="guesser" placeholder="Người đã rủ bạn đi nhậu" required>
                 </div>
 
                 <div class="form-group">
                     <label for="relationship">Quan hệ với người nhậu:</label>
                     <select id="relationship" name="relationship" required>
                         <option value="">Chọn quan hệ</option>
-                        <option value="bạn bè">Bạn bè</option>
-                        <option value="đồng nghiệp">Đồng nghiệp</option>
-                        <option value="họ hàng">Họ hàng</option>
+                        <option value="bạn thân">Bạn thân</option>
+                        <option value="bạn học cũ">Bạn học cũ</option>
+                        <option value="bạn đồng nghiệp">Bạn đồng nghiệp</option>
+                        <option value="bạn kinh doanh">Bạn kinh doanh</option>
+                        <option value="họ hàng xa">Họ hàng xa</option>
+                        <option value="họ hàng gần">Họ hàng gần</option>
+                        <option value="bạn qua mạng">Bạn qua mạng</option>
+                        <option value="người quen">Người quen</option>
+                        <option value="khách hàng">Khách hàng</option>
+                        <option value="đối tác">Đối tác</option>
                         <option value="khác">Khác</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="drinkingVenue">Địa điểm nhậu:</label>
+                    <select id="drinkingVenue" name="drinkingVenue" required>
+                        <option value="">Chọn địa điểm</option>
+                        <option value="quán bia">Quán bia</option>
+                        <option value="nhà hàng">Nhà hàng</option>
+                        <option value="bar">Bar/Pub</option>
+                        <option value="club">Club</option>
+                        <option value="nhà bạn">Nhà bạn</option>
+                        <option value="khách sạn">Khách sạn</option>
+                        <option value="resort">Resort</option>
+                        <option value="ngoài trời">Ngoài trời</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="drinkingVenueDetail">Tên địa điểm cụ thể:</label>
+                    <input type="text" id="drinkingVenueDetail" name="drinkingVenueDetail" placeholder="Ví dụ: Quán bia Hùng Vương, Bar Sky..." required>
                 </div>
 
                 <div class="form-row">
@@ -341,6 +384,306 @@
                     <i class="fas fa-briefcase"></i>
                 </button>
             </form>
+
+            <!-- Study Form -->
+            <form id="studyForm" class="permission-form" data-type="study">
+                <h2 class="form-title">🎓 Form Xin Phép Học Tập 🎓</h2>
+                
+                <div class="form-group">
+                    <label for="studyType">Loại hoạt động học tập:</label>
+                    <select id="studyType" name="studyType" required>
+                        <option value="">Chọn loại hoạt động</option>
+                        <option value="học thêm">Học thêm</option>
+                        <option value="ôn thi">Ôn thi</option>
+                        <option value="hội thảo">Hội thảo</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="khóa học">Khóa học</option>
+                        <option value="thực hành">Thực hành</option>
+                        <option value="nghiên cứu">Nghiên cứu</option>
+                        <option value="thuyết trình">Thuyết trình</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="studySubject">Môn học/Chủ đề:</label>
+                    <input type="text" id="studySubject" name="studySubject" placeholder="Ví dụ: Toán, Tiếng Anh, Kỹ năng mềm..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="studyLocation">Địa điểm học:</label>
+                    <input type="text" id="studyLocation" name="studyLocation" placeholder="Tên trung tâm, trường học, địa chỉ..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="studyWith">Học với ai:</label>
+                    <input type="text" id="studyWith" name="studyWith" placeholder="Thầy cô, bạn bè, nhóm học..." required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studyStartTime">Giờ bắt đầu:</label>
+                        <input type="time" id="studyStartTime" name="studyStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studyEndTime">Giờ kết thúc:</label>
+                        <input type="time" id="studyEndTime" name="studyEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="studyReason">Lý do học:</label>
+                    <textarea id="studyReason" name="studyReason" rows="3" placeholder="Mục tiêu, lý do cần thiết..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Học Tập
+                    <i class="fas fa-graduation-cap"></i>
+                </button>
+            </form>
+
+            <!-- Sports Form -->
+            <form id="sportsForm" class="permission-form" data-type="sports">
+                <h2 class="form-title">🏃‍♂️ Form Xin Phép Thể Thao 🏃‍♂️</h2>
+                
+                <div class="form-group">
+                    <label for="sportType">Loại thể thao:</label>
+                    <select id="sportType" name="sportType" required>
+                        <option value="">Chọn môn thể thao</option>
+                        <option value="bóng đá">Bóng đá</option>
+                        <option value="bóng rổ">Bóng rổ</option>
+                        <option value="cầu lông">Cầu lông</option>
+                        <option value="tennis">Tennis</option>
+                        <option value="bơi lội">Bơi lội</option>
+                        <option value="gym">Gym/Fitness</option>
+                        <option value="yoga">Yoga</option>
+                        <option value="chạy bộ">Chạy bộ</option>
+                        <option value="đạp xe">Đạp xe</option>
+                        <option value="leo núi">Leo núi</option>
+                        <option value="bóng chuyền">Bóng chuyền</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sportLocation">Địa điểm tập:</label>
+                    <input type="text" id="sportLocation" name="sportLocation" placeholder="Sân bóng, phòng gym, hồ bơi..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sportWith">Tập với ai:</label>
+                    <input type="text" id="sportWith" name="sportWith" placeholder="Bạn bè, huấn luyện viên, nhóm..." required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sportStartTime">Giờ bắt đầu:</label>
+                        <input type="time" id="sportStartTime" name="sportStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sportEndTime">Giờ kết thúc:</label>
+                        <input type="time" id="sportEndTime" name="sportEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sportIntensity">Cường độ tập:</label>
+                    <select id="sportIntensity" name="sportIntensity" required>
+                        <option value="">Chọn cường độ</option>
+                        <option value="nhẹ">Nhẹ (đi bộ, yoga)</option>
+                        <option value="trung bình">Trung bình (bóng đá, cầu lông)</option>
+                        <option value="nặng">Nặng (gym, chạy bộ)</option>
+                        <option value="rất nặng">Rất nặng (leo núi, marathon)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sportCommitment">Cam kết:</label>
+                    <textarea id="sportCommitment" name="sportCommitment" rows="2" placeholder="Ví dụ: Sẽ tập an toàn, không quá sức..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Thể Thao
+                    <i class="fas fa-dumbbell"></i>
+                </button>
+            </form>
+
+            <!-- Health Form -->
+            <form id="healthForm" class="permission-form" data-type="health">
+                <h2 class="form-title">🏥 Form Xin Phép Sức Khỏe 🏥</h2>
+                
+                <div class="form-group">
+                    <label for="healthType">Loại hoạt động sức khỏe:</label>
+                    <select id="healthType" name="healthType" required>
+                        <option value="">Chọn loại hoạt động</option>
+                        <option value="khám bệnh">Khám bệnh</option>
+                        <option value="tái khám">Tái khám</option>
+                        <option value="xét nghiệm">Xét nghiệm</option>
+                        <option value="chụp phim">Chụp phim/X-quang</option>
+                        <option value="phẫu thuật">Phẫu thuật</option>
+                        <option value="vật lý trị liệu">Vật lý trị liệu</option>
+                        <option value="nha khoa">Nha khoa</option>
+                        <option value="khám định kỳ">Khám định kỳ</option>
+                        <option value="tiêm chủng">Tiêm chủng</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="healthLocation">Địa điểm khám/chữa bệnh:</label>
+                    <input type="text" id="healthLocation" name="healthLocation" placeholder="Tên bệnh viện, phòng khám..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="healthDoctor">Bác sĩ/chuyên khoa:</label>
+                    <input type="text" id="healthDoctor" name="healthDoctor" placeholder="Tên bác sĩ hoặc chuyên khoa" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="healthSymptoms">Triệu chứng/Lý do:</label>
+                    <textarea id="healthSymptoms" name="healthSymptoms" rows="3" placeholder="Mô tả triệu chứng hoặc lý do khám..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="healthStartTime">Giờ hẹn:</label>
+                        <input type="time" id="healthStartTime" name="healthStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="healthEndTime">Dự kiến kết thúc:</label>
+                        <input type="time" id="healthEndTime" name="healthEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="healthUrgency">Mức độ khẩn cấp:</label>
+                    <select id="healthUrgency" name="healthUrgency" required>
+                        <option value="">Chọn mức độ</option>
+                        <option value="không khẩn cấp">Không khẩn cấp</option>
+                        <option value="khẩn cấp nhẹ">Khẩn cấp nhẹ</option>
+                        <option value="khẩn cấp">Khẩn cấp</option>
+                        <option value="rất khẩn cấp">Rất khẩn cấp</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Sức Khỏe
+                    <i class="fas fa-heartbeat"></i>
+                </button>
+            </form>
+
+            <!-- Family Form -->
+            <form id="familyForm" class="permission-form" data-type="family">
+                <h2 class="form-title">👨‍👩‍👧‍👦 Form Xin Phép Gia Đình 👨‍👩‍👧‍👦</h2>
+                
+                <div class="form-group">
+                    <label for="familyType">Loại hoạt động gia đình:</label>
+                    <select id="familyType" name="familyType" required>
+                        <option value="">Chọn loại hoạt động</option>
+                        <option value="họp gia đình">Họp gia đình</option>
+                        <option value="tiệc sinh nhật">Tiệc sinh nhật</option>
+                        <option value="cưới hỏi">Cưới hỏi</option>
+                        <option value="ma chay">Ma chay</option>
+                        <option value="thăm ông bà">Thăm ông bà</option>
+                        <option value="du lịch gia đình">Du lịch gia đình</option>
+                        <option value="ăn tối gia đình">Ăn tối gia đình</option>
+                        <option value="họp mặt họ hàng">Họp mặt họ hàng</option>
+                        <option value="lễ tết">Lễ tết</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="familyWith">Với ai:</label>
+                    <input type="text" id="familyWith" name="familyWith" placeholder="Ông bà, bố mẹ, anh chị em..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="familyLocation">Địa điểm:</label>
+                    <input type="text" id="familyLocation" name="familyLocation" placeholder="Nhà ông bà, nhà hàng, địa điểm..." required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="familyStartTime">Giờ bắt đầu:</label>
+                        <input type="time" id="familyStartTime" name="familyStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="familyEndTime">Giờ kết thúc:</label>
+                        <input type="time" id="familyEndTime" name="familyEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="familyReason">Lý do quan trọng:</label>
+                    <textarea id="familyReason" name="familyReason" rows="3" placeholder="Tại sao cần tham gia hoạt động này..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Gia Đình
+                    <i class="fas fa-users"></i>
+                </button>
+            </form>
+
+            <!-- Other Form -->
+            <form id="otherForm" class="permission-form" data-type="other">
+                <h2 class="form-title">📝 Form Xin Phép Khác 📝</h2>
+                
+                <div class="form-group">
+                    <label for="otherType">Loại hoạt động:</label>
+                    <select id="otherType" name="otherType" required>
+                        <option value="">Chọn loại hoạt động</option>
+                        <option value="sự kiện">Sự kiện</option>
+                        <option value="hội nghị">Hội nghị</option>
+                        <option value="triển lãm">Triển lãm</option>
+                        <option value="buổi hòa nhạc">Buổi hòa nhạc</option>
+                        <option value="lễ hội">Lễ hội</option>
+                        <option value="tình nguyện">Tình nguyện</option>
+                        <option value="phỏng vấn">Phỏng vấn</option>
+                        <option value="hẹn hò">Hẹn hò</option>
+                        <option value="spa">Spa/Thẩm mỹ</option>
+                        <option value="mua sắm đặc biệt">Mua sắm đặc biệt</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="otherWith">Với ai:</label>
+                    <input type="text" id="otherWith" name="otherWith" placeholder="Bạn bè, người thân, đồng nghiệp..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="otherLocation">Địa điểm:</label>
+                    <input type="text" id="otherLocation" name="otherLocation" placeholder="Tên địa điểm cụ thể..." required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="otherStartTime">Giờ bắt đầu:</label>
+                        <input type="time" id="otherStartTime" name="otherStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="otherEndTime">Giờ kết thúc:</label>
+                        <input type="time" id="otherEndTime" name="otherEndTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="otherDescription">Mô tả chi tiết:</label>
+                    <textarea id="otherDescription" name="otherDescription" rows="4" placeholder="Mô tả chi tiết hoạt động, lý do, mục đích..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i>
+                    Xin Phép Khác
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </form>
         </div>
 
         <!-- Mini Games Section -->
@@ -366,6 +709,41 @@
                     <div class="game-icon">🔮</div>
                     <h3>Bói Tình Duyên</h3>
                     <p>Xem vận may tình cảm</p>
+                </div>
+                <div class="game-card" onclick="openGame('love-quiz')">
+                    <div class="game-icon">🧩</div>
+                    <h3>Quiz Tình Yêu</h3>
+                    <p>Trắc nghiệm hiểu biết</p>
+                </div>
+                <div class="game-card" onclick="openGame('heart-calculator')">
+                    <div class="game-icon">💯</div>
+                    <h3>Máy Tính Tình Yêu</h3>
+                    <p>Tính độ tương hợp</p>
+                </div>
+                <div class="game-card" onclick="openGame('love-story')">
+                    <div class="game-icon">📖</div>
+                    <h3>Câu Chuyện Tình Yêu</h3>
+                    <p>Tạo câu chuyện ngẫu nhiên</p>
+                </div>
+                <div class="game-card" onclick="openGame('couple-challenge')">
+                    <div class="game-icon">🏆</div>
+                    <h3>Thử Thách Cặp Đôi</h3>
+                    <p>Trò chơi tương tác</p>
+                </div>
+                <div class="game-card" onclick="openGame('love-music')">
+                    <div class="game-icon">🎵</div>
+                    <h3>Nhạc Tình Yêu</h3>
+                    <p>Gợi ý bài hát lãng mạn</p>
+                </div>
+                <div class="game-card" onclick="openGame('date-ideas')">
+                    <div class="game-icon">💡</div>
+                    <h3>Ý Tưởng Hẹn Hò</h3>
+                    <p>Gợi ý hoạt động lãng mạn</p>
+                </div>
+                <div class="game-card" onclick="openGame('love-calendar')">
+                    <div class="game-icon">📅</div>
+                    <h3>Lịch Tình Yêu</h3>
+                    <p>Ngày kỷ niệm đặc biệt</p>
                 </div>
             </div>
         </div>
@@ -496,6 +874,34 @@
                                 <div class="stat-info">
                                     <h5>Mua sắm</h5>
                                     <span id="shoppingCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🎓</div>
+                                <div class="stat-info">
+                                    <h5>Học tập</h5>
+                                    <span id="studyCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🏃‍♂️</div>
+                                <div class="stat-info">
+                                    <h5>Thể thao</h5>
+                                    <span id="sportsCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💔</div>
+                                <div class="stat-info">
+                                    <h5>Lần xác nhận</h5>
+                                    <span id="confirmationsCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💕</div>
+                                <div class="stat-info">
+                                    <h5>Ở nhà</h5>
+                                    <span id="stayHomeCount">0</span>
                                 </div>
                             </div>
                         </div>
