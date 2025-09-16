@@ -247,6 +247,78 @@ body {
     animation: slideInUp 0.8s ease-out 0.1s both;
 }
 
+/* Geo Tools */
+.geo-tools {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    animation: slideInUp 0.8s ease-out 0.05s both;
+}
+
+.geo-title {
+    text-align: center;
+    color: #e91e63;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-family: 'Dancing Script', cursive;
+}
+
+.geo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.geo-card {
+    border: 2px solid #ffb3d1;
+    border-radius: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+}
+
+.geo-card h3 {
+    color: #e91e63;
+    margin-bottom: 10px;
+}
+
+.geo-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.geo-btn {
+    background: linear-gradient(45deg, #9C27B0, #E1BEE7);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.geo-btn.primary {
+    background: linear-gradient(45deg, #4CAF50, #66BB6A);
+}
+
+.geo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.geo-result {
+    margin-top: 15px;
+    text-align: center;
+    color: #333;
+}
+
 /* Location consent */
 .location-consent {
     background: rgba(255, 255, 255, 0.95);

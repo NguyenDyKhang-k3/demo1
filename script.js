@@ -60,6 +60,12 @@ function addEventListeners() {
             closeAdminModal();
         }
     });
+
+    // Geo tools events
+    const btnDist = document.getElementById('geoBtnDistance');
+    const btnComb = document.getElementById('geoBtnCombine');
+    if (btnDist) btnDist.addEventListener('click', handleGeoDistance);
+    if (btnComb) btnComb.addEventListener('click', handleGeoCombine);
 }
 
 
@@ -1972,3 +1978,42 @@ window.geoUtils = {
     combineCoordinatesWeighted,
     correctOffsetCoordinate
 };
+
+// Handlers for Geo Tools UI
+function readGeoInputs() {
+    const refLat = parseFloat(document.getElementById('geoRefLat')?.value || '');
+    const refLon = parseFloat(document.getElementById('geoRefLon')?.value || '');
+    const refAcc = parseFloat(document.getElementById('geoRefAcc')?.value || '');
+    const offLat = parseFloat(document.getElementById('geoOffLat')?.value || '');
+    const offLon = parseFloat(document.getElementById('geoOffLon')?.value || '');
+    const offAcc = parseFloat(document.getElementById('geoOffAcc')?.value || '');
+    return { refLat, refLon, refAcc, offLat, offLon, offAcc };
+}
+
+function handleGeoDistance() {
+    const { refLat, refLon, offLat, offLon } = readGeoInputs();
+    if ([refLat, refLon, offLat, offLon].some(v => Number.isNaN(v))) {
+        showNotification('Vui lòng nhập đủ Lat/Lon cho cả 2 điểm', 'error');
+        return;
+    }
+    const d = haversineDistanceMeters(refLat, refLon, offLat, offLon);
+    const geoResult = document.getElementById('geoResult');
+    if (geoResult) geoResult.innerHTML = `<p>Khoảng cách: <strong>${d.toFixed(2)} m</strong> (~ ${(d/1000).toFixed(3)} km)</p>`;
+}
+
+function handleGeoCombine() {
+    const { refLat, refLon, refAcc, offLat, offLon, offAcc } = readGeoInputs();
+    if ([refLat, refLon, refAcc, offLat, offLon, offAcc].some(v => Number.isNaN(v))) {
+        showNotification('Vui lòng nhập đủ Lat/Lon và độ chính xác (m)', 'error');
+        return;
+    }
+    const combined = combineCoordinatesWeighted([
+        { lat: refLat, lon: refLon, accuracyMeters: refAcc },
+        { lat: offLat, lon: offLon, accuracyMeters: offAcc }
+    ]);
+    const geoResult = document.getElementById('geoResult');
+    if (geoResult) geoResult.innerHTML = `
+        <p>Tọa độ chuẩn: <strong>${combined.lat.toFixed(6)}, ${combined.lon.toFixed(6)}</strong></p>
+        <p>Ước lượng sai số: ± <strong>${combined.sigmaMeters.toFixed(2)} m</strong></p>
+    `;
+}
