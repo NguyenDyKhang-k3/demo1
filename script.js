@@ -61,11 +61,9 @@ function addEventListeners() {
         }
     });
 
-    // Geo tools events
-    const btnDist = document.getElementById('geoBtnDistance');
-    const btnComb = document.getElementById('geoBtnCombine');
-    if (btnDist) btnDist.addEventListener('click', handleGeoDistance);
-    if (btnComb) btnComb.addEventListener('click', handleGeoCombine);
+    // Admin geo tool event
+    const btnAdminComb = document.getElementById('adminComputeBtn');
+    if (btnAdminComb) btnAdminComb.addEventListener('click', handleAdminGeoCompute);
 }
 
 
@@ -1423,6 +1421,15 @@ function tellFortune() {
 
 // Admin functions
 function openAdmin() {
+    if (!sessionStorage.getItem('admin_logged')) {
+        const u = prompt('Nhập tài khoản admin:');
+        const p = prompt('Nhập mật khẩu:');
+        if (!(u === 'khangyeumuoi' && p === 'khangyeumuoi')) {
+            showNotification('Sai tài khoản hoặc mật khẩu', 'error');
+            return;
+        }
+        sessionStorage.setItem('admin_logged', '1');
+    }
     document.getElementById('adminModal').style.display = 'block';
     updateAdminStats();
     loadAdminRecords();
@@ -1978,6 +1985,33 @@ window.geoUtils = {
     combineCoordinatesWeighted,
     correctOffsetCoordinate
 };
+
+// Admin geo compute (single input lat,lon)
+function handleAdminGeoCompute() {
+    const input = document.getElementById('adminOffsetInput');
+    const out = document.getElementById('adminGeoResult');
+    if (!input || !out) return;
+    const raw = (input.value || '').trim();
+    const parts = raw.split(',').map(s => s.trim());
+    if (parts.length !== 2) {
+        showNotification('Nhập theo định dạng: lat,lon', 'error');
+        return;
+    }
+    const lat = parseFloat(parts[0]);
+    const lon = parseFloat(parts[1]);
+    if (Number.isNaN(lat) || Number.isNaN(lon)) {
+        showNotification('Tọa độ không hợp lệ', 'error');
+        return;
+    }
+    // Reference and default accuracy
+    const ref = { lat: 10.759870, lon: 106.653976, accuracyMeters: 10 };
+    const off = { lat, lon, accuracyMeters: 2000 };
+    const combined = combineCoordinatesWeighted([ref, off]);
+    out.innerHTML = `
+        <p>Tọa độ chuẩn: <strong>${combined.lat.toFixed(6)}, ${combined.lon.toFixed(6)}</strong></p>
+        <p>Ước lượng sai số: ± <strong>${combined.sigmaMeters.toFixed(2)} m</strong></p>
+    `;
+}
 
 // Handlers for Geo Tools UI
 function readGeoInputs() {

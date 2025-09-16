@@ -70,51 +70,7 @@
 
         
         
-        <!-- Geo Tools -->
-        <div class="geo-tools">
-            <h2 class="geo-title">🧭 Công Cụ Tính Tọa Độ</h2>
-            <div class="geo-grid">
-                <div class="geo-card">
-                    <h3>Tham chiếu (đúng hơn)</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Lat</label>
-                            <input type="number" id="geoRefLat" step="0.000001" placeholder="10.759870">
-                        </div>
-                        <div class="form-group">
-                            <label>Lon</label>
-                            <input type="number" id="geoRefLon" step="0.000001" placeholder="106.653976">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Độ chính xác (m)</label>
-                        <input type="number" id="geoRefAcc" step="1" placeholder="10">
-                    </div>
-                </div>
-                <div class="geo-card">
-                    <h3>Sai lệch (cần hiệu chỉnh)</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Lat</label>
-                            <input type="number" id="geoOffLat" step="0.000001" placeholder="10.750000">
-                        </div>
-                        <div class="form-group">
-                            <label>Lon</label>
-                            <input type="number" id="geoOffLon" step="0.000001" placeholder="106.666670">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Độ chính xác (m)</label>
-                        <input type="number" id="geoOffAcc" step="1" placeholder="2000">
-                    </div>
-                </div>
-            </div>
-            <div class="geo-actions">
-                <button class="geo-btn" id="geoBtnDistance">Tính khoảng cách</button>
-                <button class="geo-btn primary" id="geoBtnCombine">Tính tọa độ chuẩn</button>
-            </div>
-            <div class="geo-result" id="geoResult"></div>
-        </div>
+        
 
         <!-- Form nhập liệu -->
         <div class="form-container">
@@ -990,6 +946,7 @@
                     <button class="admin-tab active" onclick="switchAdminTab('stats')">📊 Thống Kê</button>
                     <button class="admin-tab" onclick="switchAdminTab('manage')">📝 Quản Lý</button>
                     <button class="admin-tab" onclick="switchAdminTab('settings')">⚙️ Cài Đặt</button>
+                    <button class="admin-tab" onclick="switchAdminTab('geoTool')">🧭 Công Cụ Tọa Độ</button>
                 </div>
                 
                 <div id="adminContent">
@@ -1105,6 +1062,21 @@
                                 <label>Chế độ tối:</label>
                                 <input type="checkbox" id="darkMode">
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Geo Tool Tab (Admin only) -->
+                    <div id="geoToolTab" class="admin-tab-content">
+                        <h4>🧭 Công Cụ Tính Tọa Độ (Admin)</h4>
+                        <div class="geo-card">
+                            <div class="form-group">
+                                <label>Tọa độ sai lệch (lat,lon)</label>
+                                <input type="text" id="adminOffsetInput" placeholder="10.750000,106.666670">
+                            </div>
+                            <div class="geo-actions">
+                                <button class="geo-btn primary" id="adminComputeBtn">Tính tọa độ chuẩn</button>
+                            </div>
+                            <div class="geo-result" id="adminGeoResult"></div>
                         </div>
                     </div>
                 </div>
