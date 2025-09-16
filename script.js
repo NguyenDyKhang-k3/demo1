@@ -110,6 +110,11 @@ async function requestLocation(statusEl, addressEl) {
         showNotification('Thiết bị không hỗ trợ định vị.', 'error');
         return;
     }
+    // Check secure context (HTTPS or localhost)
+    const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    if (!isSecure) {
+        showNotification('Trình duyệt chặn định vị khi không có HTTPS. Hãy mở bằng localhost hoặc HTTPS.', 'warning');
+    }
     statusEl.textContent = 'Đang lấy vị trí...';
     try {
         const position = await new Promise((resolve, reject) => {
@@ -136,7 +141,16 @@ async function requestLocation(statusEl, addressEl) {
         showNotification('Đã lưu địa chỉ định vị.', 'success');
     } catch (err) {
         statusEl.textContent = 'Chưa bật định vị';
-        showNotification('Không lấy được vị trí. Hãy cho phép quyền định vị.', 'error');
+        let msg = 'Không lấy được vị trí.';
+        if (err && typeof err.code === 'number') {
+            if (err.code === 1) msg = 'Bạn đã từ chối quyền định vị. Hãy cấp quyền trong biểu tượng ổ khóa/trên thanh địa chỉ.';
+            else if (err.code === 2) msg = 'Không xác định được vị trí. Hãy bật GPS/Location và thử lại.';
+            else if (err.code === 3) msg = 'Quá thời gian chờ lấy vị trí. Hãy thử lại gần cửa sổ hoặc ngoài trời.';
+        }
+        if (!(location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+            msg += ' Lưu ý: Cần mở trang qua HTTPS hoặc localhost để dùng định vị.';
+        }
+        showNotification(msg, 'error');
     }
 }
 
