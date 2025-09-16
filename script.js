@@ -443,7 +443,8 @@ function renderDrinkingList() {
         allRecords = [];
     }
     
-    if (allRecords.length === 0) {
+    const visibleRecords = allRecords.filter(r => r.type !== 'visitor_ip');
+    if (visibleRecords.length === 0) {
         drinkingList.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-heart-broken"></i>
@@ -453,7 +454,7 @@ function renderDrinkingList() {
         return;
     }
     
-    drinkingList.innerHTML = allRecords.map(record => {
+    drinkingList.innerHTML = visibleRecords.map(record => {
         const icons = {
             drinking: '🍻',
             eating: '🍽️',
