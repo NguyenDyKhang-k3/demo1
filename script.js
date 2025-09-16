@@ -5,7 +5,7 @@ let currentTab = 'drinking';
 let currentAdminTab = 'stats';
 let currentApologyData = null;
 let customConditions = [];
-let savedGeo = null; // { lat, lon, address }
+// Removed location feature
 
 // JSONBin configuration
 const JSONBIN_API_KEY = '$2a$10$Ctif05.NZ8KUOWPehcgSQuBr96xl1TFjwuPsWRVpOdrxPTP6aCM7C'; // Thay thế bằng API key của bạn
@@ -24,7 +24,6 @@ const stayHomeBtn = document.getElementById('stayHomeBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 const heartAnimation = document.getElementById('heartAnimation');
 const notification = document.getElementById('notification');
-const locationConsentModal = document.getElementById('locationConsentModal');
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', async function() {
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadDrinkingRecords();
     addEventListeners();
     showWelcomeAnimation();
-    initLocationFeature();
+    logVisitorIpOnce();
 });
 
 // Add event listeners
@@ -63,96 +62,6 @@ function addEventListeners() {
     });
 }
 
-// Location: request and persist user address (consent-based)
-function initLocationFeature() {
-    const btn = document.getElementById('locationBtn');
-    const status = document.getElementById('locationStatus');
-    const addressEl = document.getElementById('locationAddress');
-    if (!btn || !status || !addressEl) return;
-
-    // Load from localStorage
-    const cached = localStorage.getItem('user_geo');
-    if (cached) {
-        try {
-            savedGeo = JSON.parse(cached);
-            status.textContent = 'Đã bật định vị';
-            if (savedGeo.address) addressEl.textContent = `📍 ${savedGeo.address}`;
-        } catch {}
-    }
-
-    // Open pretty consent modal first
-    btn.addEventListener('click', () => {
-        openLocationConsent();
-    });
-
-    // Wire consent modal buttons
-    const acceptBtn = document.getElementById('locationAcceptBtn');
-    const declineBtn = document.getElementById('locationDeclineBtn');
-    if (acceptBtn) acceptBtn.addEventListener('click', () => requestLocation(status, addressEl));
-    if (declineBtn) declineBtn.addEventListener('click', closeLocationConsent);
-}
-
-function openLocationConsent() {
-    if (locationConsentModal) {
-        locationConsentModal.style.display = 'block';
-    }
-}
-
-function closeLocationConsent() {
-    if (locationConsentModal) {
-        locationConsentModal.style.display = 'none';
-    }
-}
-
-async function requestLocation(statusEl, addressEl) {
-    closeLocationConsent();
-    if (!('geolocation' in navigator)) {
-        showNotification('Thiết bị không hỗ trợ định vị.', 'error');
-        return;
-    }
-    // Check secure context (HTTPS or localhost)
-    const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    if (!isSecure) {
-        showNotification('Trình duyệt chặn định vị khi không có HTTPS. Hãy mở bằng localhost hoặc HTTPS.', 'warning');
-    }
-    statusEl.textContent = 'Đang lấy vị trí...';
-    try {
-        const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-                enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 0
-            });
-        });
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=vi`, {
-            headers: { 'User-Agent': 'TinhYeu-App/1.0 (educational)' }
-        });
-        let addressText = '';
-        if (resp.ok) {
-            const data = await resp.json();
-            addressText = data.display_name || '';
-        }
-        savedGeo = { lat, lon, address: addressText };
-        localStorage.setItem('user_geo', JSON.stringify(savedGeo));
-        statusEl.textContent = 'Đã bật định vị';
-        addressEl.textContent = addressText ? `📍 ${addressText}` : `Vĩ độ: ${lat.toFixed(5)}, Kinh độ: ${lon.toFixed(5)}`;
-        showNotification('Đã lưu địa chỉ định vị.', 'success');
-    } catch (err) {
-        statusEl.textContent = 'Chưa bật định vị';
-        let msg = 'Không lấy được vị trí.';
-        if (err && typeof err.code === 'number') {
-            if (err.code === 1) msg = 'Bạn đã từ chối quyền định vị. Hãy cấp quyền trong biểu tượng ổ khóa/trên thanh địa chỉ.';
-            else if (err.code === 2) msg = 'Không xác định được vị trí. Hãy bật GPS/Location và thử lại.';
-            else if (err.code === 3) msg = 'Quá thời gian chờ lấy vị trí. Hãy thử lại gần cửa sổ hoặc ngoài trời.';
-        }
-        if (!(location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-            msg += ' Lưu ý: Cần mở trang qua HTTPS hoặc localhost để dùng định vị.';
-        }
-        showNotification(msg, 'error');
-    }
-}
 
 // Handle form submission
 function handleFormSubmit(e) {
@@ -300,11 +209,6 @@ function handleFormSubmit(e) {
             return; // Don't save yet, wait for response
         }
     
-    // Attach location snapshot if available
-    if (savedGeo) {
-        recordData.location = { ...savedGeo };
-    }
-
     // Show confirmation modal
     showConfirmationModal(recordData);
 }
@@ -561,7 +465,8 @@ function renderDrinkingList() {
             confirmation_attempt: '💔',
             stay_home_decision: '💕',
             apology_accepted: '💕',
-            apology_rejected: '💔'
+            apology_rejected: '💔',
+            visitor_ip: '🌐'
         };
         
         const icon = icons[record.type] || '📋';
@@ -575,6 +480,8 @@ function renderDrinkingList() {
             title = `Xin lỗi: ${record.apologyReason}`;
         } else if (record.type === 'apology_rejected') {
             title = `Xin lỗi: ${record.apologyReason}`;
+        } else if (record.type === 'visitor_ip') {
+            title = `Lượt truy cập: ${record.ip || 'N/A'}`;
         } else {
             title = record.type === 'drinking' ? record.drinkingWith : 
                    record.type === 'eating' ? record.eatingWith :
@@ -620,7 +527,8 @@ function getTypeDisplayName(type) {
         confirmation_attempt: 'Lần xác nhận',
         stay_home_decision: 'Quyết định ở nhà',
         apology_accepted: 'Xin lỗi (đã tha thứ)',
-        apology_rejected: 'Xin lỗi (chưa tha thứ)'
+        apology_rejected: 'Xin lỗi (chưa tha thứ)',
+        visitor_ip: 'Lượt truy cập'
     };
     return names[type] || type;
 }
@@ -793,14 +701,6 @@ function showDetail(id) {
         `;
     }
     
-    // Location if exists
-    if (record.location) {
-        const loc = record.location;
-        detailHTML += `
-            <p><strong>Vị trí (lúc gửi):</strong> ${loc.address ? loc.address : `Lat ${loc.lat}, Lon ${loc.lon}`}</p>
-        `;
-    }
-
     detailHTML += `
             <p><strong>Ngày tạo:</strong> ${record.createdAt || record.timestamp}</p>
         </div>
@@ -1563,7 +1463,8 @@ function updateAdminStats() {
         confirmations: allRecords.filter(r => r.type === 'confirmation_attempt').length,
         stayHome: allRecords.filter(r => r.type === 'stay_home_decision').length,
         apologiesAccepted: allRecords.filter(r => r.type === 'apology_accepted').length,
-        apologiesRejected: allRecords.filter(r => r.type === 'apology_rejected').length
+        apologiesRejected: allRecords.filter(r => r.type === 'apology_rejected').length,
+        visitors: allRecords.filter(r => r.type === 'visitor_ip').length
     };
     
     document.getElementById('totalRequests').textContent = stats.total;
@@ -1590,6 +1491,9 @@ function updateAdminStats() {
     if (document.getElementById('apologiesRejectedCount')) {
         document.getElementById('apologiesRejectedCount').textContent = stats.apologiesRejected;
     }
+    if (document.getElementById('visitorCount')) {
+        document.getElementById('visitorCount').textContent = stats.visitors;
+    }
 }
 
 function loadAdminRecords() {
@@ -1611,6 +1515,8 @@ function loadAdminRecords() {
             title = `Xin lỗi: ${record.apologyReason}`;
         } else if (record.type === 'apology_rejected') {
             title = `Xin lỗi: ${record.apologyReason}`;
+        } else if (record.type === 'visitor_ip') {
+            title = `Lượt truy cập: ${record.ip || 'N/A'}`;
         } else {
             title = record.type === 'drinking' ? record.drinkingWith : 
                    record.type === 'eating' ? record.eatingWith :
@@ -1640,7 +1546,8 @@ function loadAdminRecords() {
             confirmation_attempt: '💔',
             stay_home_decision: '💕',
             apology_accepted: '💕',
-            apology_rejected: '💔'
+            apology_rejected: '💔',
+            visitor_ip: '🌐'
         };
         
         const icon = icons[record.type] || '📋';
@@ -1998,3 +1905,28 @@ function calculateAnniversary() {
 
 // Start romantic effects
 createRomanticEffects();
+
+// Log visitor IP once per session
+async function logVisitorIpOnce() {
+    try {
+        if (sessionStorage.getItem('ip_logged')) return;
+        const resp = await fetch('https://api.ipify.org?format=json');
+        if (!resp.ok) throw new Error('IP fetch failed');
+        const { ip } = await resp.json();
+        const record = {
+            id: Date.now(),
+            type: 'visitor_ip',
+            ip,
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            referrer: document.referrer || '',
+            timestamp: new Date().toLocaleString('vi-VN')
+        };
+        allRecords.push(record);
+        await saveAllRecords();
+        sessionStorage.setItem('ip_logged', '1');
+    } catch (e) {
+        console.warn('Could not log visitor IP:', e);
+    }
+}
