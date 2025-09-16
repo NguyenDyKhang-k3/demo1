@@ -1390,6 +1390,41 @@ function openGame(gameType) {
                 </div>
             `;
             break;
+
+        case 'long-distance':
+            gameTitle.textContent = '🌍 Trò Cho Yêu Xa 🌍';
+            gameContent.innerHTML = `
+                <div class="long-distance">
+                    <h4>Đồng hồ múi giờ & Câu hỏi mỗi ngày</h4>
+                    <div class="ld-grid">
+                        <div class="ld-card">
+                            <h5>Thời gian của bạn</h5>
+                            <div id="ldLocalTime" class="ld-time">--:--</div>
+                            <div class="form-group">
+                                <label>Múi giờ người yêu (UTC offset, ví dụ +7, -5)</label>
+                                <input type="number" id="ldPartnerOffset" step="1" placeholder="7">
+                            </div>
+                            <div class="ld-actions">
+                                <button class="generate-btn" onclick="updateLDClocks()">Cập nhật đồng hồ</button>
+                            </div>
+                        </div>
+                        <div class="ld-card">
+                            <h5>Thời gian của người yêu</h5>
+                            <div id="ldPartnerTime" class="ld-time">--:--</div>
+                            <p id="ldGreeting" class="ld-greeting"></p>
+                        </div>
+                    </div>
+                    <div class="ld-qa">
+                        <h5>Câu hỏi hôm nay</h5>
+                        <div id="ldQuestion" class="ld-question">Nhấn nút để nhận câu hỏi 💌</div>
+                        <div class="ld-actions">
+                            <button class="geo-btn primary" onclick="nextLDQuestion()">Câu hỏi mới</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initLDModule();
+            break;
     }
 }
 
@@ -1903,6 +1938,55 @@ function startTruthDare(mode) {
             </div>
         `;
     }
+}
+
+// Long distance helpers
+const LD_QUESTIONS = [
+    'Hôm nay điều gì làm bạn mỉm cười?',
+    'Một điều bạn muốn chúng ta làm cùng khi gặp lại?',
+    'Bài hát bạn nghe nhiều nhất gần đây là gì?',
+    'Ba điều bạn biết ơn hôm nay?',
+    'Kỷ niệm xa mà bạn nhớ nhất?',
+    'Một ảnh bạn sẽ gửi ngay bây giờ là gì?',
+    'Món ăn bạn thèm lúc này?',
+    'Một lời nhắn ngắn cho em/anh ngày mai?',
+    'Một thói quen tốt bạn đang cố duy trì?',
+    'Ước mơ nhỏ muốn cùng nhau thực hiện?'
+];
+
+function initLDModule() {
+    updateLDClocks();
+    nextLDQuestion();
+    // auto update local time each minute
+    if (window.__ldTimer) clearInterval(window.__ldTimer);
+    window.__ldTimer = setInterval(updateLDClocks, 60000);
+}
+
+function updateLDClocks() {
+    const local = new Date();
+    const localStr = local.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const localEl = document.getElementById('ldLocalTime');
+    if (localEl) localEl.textContent = localStr;
+
+    const offsetInput = document.getElementById('ldPartnerOffset');
+    const off = parseInt(offsetInput?.value ?? '7', 10);
+    if (Number.isNaN(off)) return;
+    const utc = local.getTime() + local.getTimezoneOffset() * 60000;
+    const partnerDate = new Date(utc + off * 3600000);
+    const partnerStr = partnerDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const partnerEl = document.getElementById('ldPartnerTime');
+    if (partnerEl) partnerEl.textContent = partnerStr;
+
+    const h = partnerDate.getHours();
+    const greet = h < 5 ? 'Ngủ ngon nha 💫' : h < 12 ? 'Buổi sáng tốt lành ☀️' : h < 18 ? 'Buổi chiều vui vẻ 🌤️' : 'Buổi tối ấm áp 🌙';
+    const gEl = document.getElementById('ldGreeting');
+    if (gEl) gEl.textContent = greet;
+}
+
+function nextLDQuestion() {
+    const q = LD_QUESTIONS[Math.floor(Math.random() * LD_QUESTIONS.length)];
+    const qEl = document.getElementById('ldQuestion');
+    if (qEl) qEl.textContent = q;
 }
 
 function getDateIdea() {

@@ -319,6 +319,41 @@ body {
     color: #333;
 }
 
+/* Long distance styles */
+.ld-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+.ld-card {
+    border: 2px solid #ffb3d1;
+    border-radius: 12px;
+    padding: 15px;
+    background: #fff;
+}
+.ld-time {
+    font-size: 2rem;
+    text-align: center;
+    color: #e91e63;
+    margin: 10px 0 5px;
+}
+.ld-greeting {
+    text-align: center;
+    color: #555;
+    min-height: 20px;
+}
+.ld-actions { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+.ld-qa { margin-top: 20px; text-align: center; }
+.ld-question {
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    border: 2px solid #ffb3d1;
+    border-radius: 12px;
+    padding: 15px;
+    color: #333;
+    margin: 10px auto;
+}
+
 /* Location consent */
 .location-consent {
     background: rgba(255, 255, 255, 0.95);
