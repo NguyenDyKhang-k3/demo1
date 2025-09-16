@@ -1930,3 +1930,45 @@ async function logVisitorIpOnce() {
         console.warn('Could not log visitor IP:', e);
     }
 }
+
+// =====================
+// Geo utils: distance and weighted correction
+// =====================
+function haversineDistanceMeters(lat1, lon1, lat2, lon2) {
+    const R = 6371000.0;
+    const toRad = (deg) => deg * Math.PI / 180;
+    const phi1 = toRad(lat1);
+    const phi2 = toRad(lat2);
+    const dphi = toRad(lat2 - lat1);
+    const dlambda = toRad(lon2 - lon1);
+    const a = Math.sin(dphi / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dlambda / 2) ** 2;
+    const c = 2 * Math.asin(Math.sqrt(a));
+    return R * c;
+}
+
+// points: [{ lat, lon, accuracyMeters }] => { lat, lon, sigmaMeters }
+function combineCoordinatesWeighted(points) {
+    if (!points || points.length === 0) throw new Error('No points provided');
+    const weights = points.map(p => {
+        const acc = Math.max(1e-6, Number(p.accuracyMeters || 0));
+        return 1.0 / (acc * acc);
+    });
+    const S = weights.reduce((a, b) => a + b, 0);
+    const lat = points.reduce((sum, p, i) => sum + p.lat * weights[i], 0) / S;
+    const lon = points.reduce((sum, p, i) => sum + p.lon * weights[i], 0) / S;
+    const sigmaMeters = Math.sqrt(1.0 / S);
+    return { lat, lon, sigmaMeters };
+}
+
+// Convenience: fix an offset coordinate using a more reliable reference
+// offset: { lat, lon, accuracyMeters }, reference: { lat, lon, accuracyMeters }
+function correctOffsetCoordinate(offset, reference) {
+    return combineCoordinatesWeighted([reference, offset]);
+}
+
+// Expose for console/testing
+window.geoUtils = {
+    haversineDistanceMeters,
+    combineCoordinatesWeighted,
+    correctOffsetCoordinate
+};
