@@ -940,6 +940,33 @@
         </div>
     </div>
 
+    <!-- Location Consent Modal -->
+    <div id="locationConsentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header location">
+                <h3>📍 Cho phép dùng vị trí của bạn?</h3>
+                <button class="close-btn" onclick="closeLocationConsent()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Chúng mình dùng vị trí để hiển thị địa chỉ chính xác trong đơn gửi cho người yêu. Dữ liệu chỉ lưu trên thiết bị của bạn (và đính kèm vào đơn khi bạn gửi).</p>
+                <div class="warning-text">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Bạn có thể tắt bất cứ lúc nào trong trình duyệt.</span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="locationDeclineBtn" class="btn-confirm">
+                    <i class="fas fa-times"></i>
+                    Không, để sau
+                </button>
+                <button id="locationAcceptBtn" class="btn-stay-home">
+                    <i class="fas fa-check"></i>
+                    Đồng ý cấp vị trí
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Modal -->
     <div id="adminModal" class="modal">
         <div class="modal-content admin-modal">

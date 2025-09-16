@@ -24,6 +24,7 @@ const stayHomeBtn = document.getElementById('stayHomeBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 const heartAnimation = document.getElementById('heartAnimation');
 const notification = document.getElementById('notification');
+const locationConsentModal = document.getElementById('locationConsentModal');
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', async function() {
@@ -79,41 +80,64 @@ function initLocationFeature() {
         } catch {}
     }
 
-    btn.addEventListener('click', async () => {
-        if (!('geolocation' in navigator)) {
-            showNotification('Thiết bị không hỗ trợ định vị.', 'error');
-            return;
-        }
-        status.textContent = 'Đang lấy vị trí...';
-        try {
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
-                });
-            });
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            // Reverse geocode via Nominatim
-            const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=vi`, {
-                headers: { 'User-Agent': 'TinhYeu-App/1.0 (educational)' }
-            });
-            let addressText = '';
-            if (resp.ok) {
-                const data = await resp.json();
-                addressText = data.display_name || '';
-            }
-            savedGeo = { lat, lon, address: addressText };
-            localStorage.setItem('user_geo', JSON.stringify(savedGeo));
-            status.textContent = 'Đã bật định vị';
-            addressEl.textContent = addressText ? `📍 ${addressText}` : `Vĩ độ: ${lat.toFixed(5)}, Kinh độ: ${lon.toFixed(5)}`;
-            showNotification('Đã lưu địa chỉ định vị.', 'success');
-        } catch (err) {
-            status.textContent = 'Chưa bật định vị';
-            showNotification('Không lấy được vị trí. Hãy cho phép quyền định vị.', 'error');
-        }
+    // Open pretty consent modal first
+    btn.addEventListener('click', () => {
+        openLocationConsent();
     });
+
+    // Wire consent modal buttons
+    const acceptBtn = document.getElementById('locationAcceptBtn');
+    const declineBtn = document.getElementById('locationDeclineBtn');
+    if (acceptBtn) acceptBtn.addEventListener('click', () => requestLocation(status, addressEl));
+    if (declineBtn) declineBtn.addEventListener('click', closeLocationConsent);
+}
+
+function openLocationConsent() {
+    if (locationConsentModal) {
+        locationConsentModal.style.display = 'block';
+    }
+}
+
+function closeLocationConsent() {
+    if (locationConsentModal) {
+        locationConsentModal.style.display = 'none';
+    }
+}
+
+async function requestLocation(statusEl, addressEl) {
+    closeLocationConsent();
+    if (!('geolocation' in navigator)) {
+        showNotification('Thiết bị không hỗ trợ định vị.', 'error');
+        return;
+    }
+    statusEl.textContent = 'Đang lấy vị trí...';
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            });
+        });
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=vi`, {
+            headers: { 'User-Agent': 'TinhYeu-App/1.0 (educational)' }
+        });
+        let addressText = '';
+        if (resp.ok) {
+            const data = await resp.json();
+            addressText = data.display_name || '';
+        }
+        savedGeo = { lat, lon, address: addressText };
+        localStorage.setItem('user_geo', JSON.stringify(savedGeo));
+        statusEl.textContent = 'Đã bật định vị';
+        addressEl.textContent = addressText ? `📍 ${addressText}` : `Vĩ độ: ${lat.toFixed(5)}, Kinh độ: ${lon.toFixed(5)}`;
+        showNotification('Đã lưu địa chỉ định vị.', 'success');
+    } catch (err) {
+        statusEl.textContent = 'Chưa bật định vị';
+        showNotification('Không lấy được vị trí. Hãy cho phép quyền định vị.', 'error');
+    }
 }
 
 // Handle form submission

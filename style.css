@@ -1042,6 +1042,10 @@ body {
     position: relative;
 }
 
+.modal-header.location {
+    background: linear-gradient(45deg, #2196F3, #03A9F4);
+}
+
 .modal-header h3 {
     font-size: 1.5rem;
     margin: 0;
