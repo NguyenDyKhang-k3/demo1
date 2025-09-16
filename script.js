@@ -1372,6 +1372,24 @@ function openGame(gameType) {
                 </div>
             `;
             break;
+
+        case 'couple-truth-dare':
+            gameTitle.textContent = '🎲 Couple Truth or Dare 🎲';
+            gameContent.innerHTML = `
+                <div class="truth-dare">
+                    <h4>Chọn chế độ</h4>
+                    <div class="test-buttons">
+                        <button class="generate-btn" onclick="startTruthDare('truth')">Truth</button>
+                        <button class="generate-btn" onclick="startTruthDare('dare')">Dare</button>
+                        <button class="generate-btn" onclick="startTruthDare('random')">Random</button>
+                    </div>
+                    <div id="tdResult" class="td-result"></div>
+                    <div class="test-buttons" style="margin-top:12px;">
+                        <button class="retry-btn" onclick="startTruthDare('again')">Câu khác</button>
+                    </div>
+                </div>
+            `;
+            break;
     }
 }
 
@@ -1850,6 +1868,41 @@ function getLoveSong() {
     const randomSong = songs[Math.floor(Math.random() * songs.length)];
     document.getElementById('songTitle').textContent = randomSong.title;
     document.getElementById('songArtist').textContent = randomSong.artist;
+}
+
+// Truth or Dare logic
+const TD_QUESTIONS = {
+    truth: [
+        'Lần gần nhất bạn làm người yêu bất ngờ là khi nào?',
+        'Điều gì ở người yêu làm bạn rung động nhất?',
+        'Một thói quen xấu của bạn mà người yêu chưa biết?',
+        'Kỷ niệm ngọt ngào nhất của hai bạn là gì?',
+        'Bạn đã từng ghen vì chuyện gì gần đây?'
+    ],
+    dare: [
+        'Ôm người yêu 30 giây thật chặt 💕',
+        'Gọi tên người yêu thật to 5 lần 😆',
+        'Hát một đoạn bài hát tình yêu cho người yêu nghe 🎵',
+        'Massage vai cho người yêu 5 phút 💆‍♀️',
+        'Viết một tin nhắn “từ đáy lòng” và gửi ngay 💌'
+    ]
+};
+
+let lastTDMode = 'random';
+function startTruthDare(mode) {
+    if (mode === 'again') mode = lastTDMode;
+    if (mode === 'random') mode = Math.random() < 0.5 ? 'truth' : 'dare';
+    lastTDMode = mode;
+    const pool = TD_QUESTIONS[mode];
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    const el = document.getElementById('tdResult');
+    if (el) {
+        el.innerHTML = `
+            <div class="fortune-text" style="margin-top:16px;">
+                <strong>${mode.toUpperCase()}:</strong> ${pick}
+            </div>
+        `;
+    }
 }
 
 function getDateIdea() {
